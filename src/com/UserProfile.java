@@ -4,8 +4,7 @@ package com;
  * Created by William - BASIC on 18/02/2021
  * UPDATE PROGRAM COMMENTS ABOUR PROGRAM HERE
  */
-abstract public class UserProfile
-{
+abstract public class UserProfile {
    private String name;
    private String id;
    private String password;
@@ -32,17 +31,17 @@ abstract public class UserProfile
       this.id = id;
    }
 
-   public void checkCredentials(){};
+   public abstract void checkCredentials();
 
-   public void calculateEstimate(){};
+   public abstract void calculateEstimate();
 
-   public void checkAvailableSlot(){};
+   public abstract void checkAvailableSlot();
 
-   public void generateOutput(){};
+   public abstract void generateOutput();
 
-   public void acceptInput(){};
+   public abstract void acceptInput();
 
-   public void saveToCSV(){};
+   public abstract void saveToCSV();
 
 
 
