@@ -44,5 +44,4 @@ abstract public class UserProfile {
    public abstract void saveToCSV();
 
 
-
 }//class
