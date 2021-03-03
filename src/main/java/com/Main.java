@@ -14,7 +14,7 @@ public class Main {
         db.run();
 
         Object data = db.getPullDataFromFB();
-        System.out.println(data + "TEST");
+        System.out.println(data + " TEST");
 
         Client client = new Client();
 
