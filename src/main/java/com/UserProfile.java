@@ -6,13 +6,18 @@ package com;
  */
 abstract public class UserProfile {
    private String name;
-   private String id;
    private String password;
+   private String emailAddress;
+   private String phoneNumber;
 
-   public UserProfile(String name, String id, String password) {
+   public UserProfile(String name, String password, String emailAddress, String phoneNumber) {
       this.name = name;
-      this.id = id;
       this.password = password;
+      this.emailAddress = emailAddress;
+      this.phoneNumber = phoneNumber;
+   }
+
+   public UserProfile() {
    }
 
    public String getName() {
@@ -23,19 +28,34 @@ abstract public class UserProfile {
       this.name = name;
    }
 
-   public String getId() {
-      return id;
+   public String getPassword() {
+      return password;
    }
 
-   public void setId(String id) {
-      this.id = id;
+   public void setPassword(String password) {
+      this.password = password;
    }
+
+   public String getEmailAddress() {
+      return emailAddress;
+   }
+
+   public void setEmailAddress(String emailAddress) {
+      this.emailAddress = emailAddress;
+   }
+
+   public String getPhoneNumber() {
+      return phoneNumber;
+   }
+
+   public void setPhoneNumber(String phoneNumber) {
+      this.phoneNumber = phoneNumber;
+   }
+
 
    public abstract void checkCredentials();
 
-   public abstract void calculateEstimate();
-
-   public abstract void checkAvailableSlot();
+   public abstract String checkAvailableSlot();
 
    public abstract void generateOutput();
 
