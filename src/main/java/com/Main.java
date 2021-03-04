@@ -1,5 +1,6 @@
 package com;
 
+import java.text.DecimalFormat;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Scanner;
@@ -17,6 +18,7 @@ public class Main {
         System.out.println(data + "TEST");
 
         Client client = new Client();
+        DecimalFormat df = new DecimalFormat("00.00");
 
         System.out.println("Please enter your name: \n");
         String name = scanner.nextLine();
@@ -30,13 +32,15 @@ public class Main {
         LocalDateTime now = LocalDateTime.now();
         System.out.println("Please enter the brand of your car");
         String car = scanner.nextLine();
+        double carBrandCostAdjustment = client.addCarTypePremium(car);
         System.out.println("Please describe what you need done to your car: \n");
         String problem = scanner.nextLine();
-        String cost = client.calculateEstimate(problem);
+        double cost = client.calculateEstimate(problem);
+        double finalCost = cost * carBrandCostAdjustment;
         String appointmentDate = client.checkAvailableSlot();
         System.out.println("Your appointment has been scheduled for: " + appointmentDate + "\n" + " and the estimated cost will be: " + cost + "\n");
         FireBaseUtilities clientDetails = new FireBaseUtilities();
-        clientDetails.sendChanges(name, password, emailAddress, phone, dtf.format(now), car, problem, cost, appointmentDate);
+        clientDetails.sendChanges(name, password, emailAddress, phone, dtf.format(now), car, problem, "£" + df.format(finalCost), appointmentDate);
 
 
         try {

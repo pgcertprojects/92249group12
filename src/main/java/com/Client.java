@@ -70,15 +70,27 @@ public class Client extends UserProfile {
 
    }
 
-   public String calculateEstimate(String problem){
+   public double addCarTypePremium(String car){
+      double premium =0;
+      if(car.equals("Honda")){
+         premium = 1.3;
+      } else if (car.equals("Toyota")){
+         premium = 1.1;
+      } else if (car.equals("Ford")){
+         premium = 0.9;
+      }
+      return premium;
+   }
+
+   public double calculateEstimate(String problem){
       int cost = 0;
-      if(problem.contains("new tyres")){
+      if(problem.contains("tyres")){
          cost += 40;
       }
       if(problem.contains("wipers")){
          cost += 15;
       }
-      return "£" + cost;
+      return cost;
    }
 
    @Override
