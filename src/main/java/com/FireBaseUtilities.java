@@ -42,7 +42,7 @@ public class FireBaseUtilities implements Runnable {
       DatabaseReference refWrite = database.getReference("Newrec");
       DatabaseReference usersRef = refWrite.child("abc");
       usersRef.push().setValueAsync(detailsOfBooking);
-   };
+   }
 
    public Object getPullDataFromFB() {
       return pullDataFromFB;
