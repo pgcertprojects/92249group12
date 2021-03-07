@@ -11,7 +11,7 @@ import java.util.Scanner;
 * */
 
 public class Client extends UserProfile {
-   private static int nextUniqueID;
+//   private static int nextUniqueID;
    private String date;
    private String carType;
    private String problem;
@@ -20,7 +20,6 @@ public class Client extends UserProfile {
 
 
    public Client() {
-
    }
 
    public Client(String name, String password, String emailAddress, String phoneNumber, String date, String carType, String problem, String cost, String appointmentDate) {
@@ -30,14 +29,6 @@ public class Client extends UserProfile {
       this.problem = problem;
       this.cost = cost;
       this.appointmentDate = appointmentDate;
-   }
-
-   public static int getNextUniqueID() {
-      return nextUniqueID;
-   }
-
-   public static void setNextUniqueID(int nextUniqueID) {
-      Client.nextUniqueID = nextUniqueID;
    }
 
    public String getDate() {
@@ -103,67 +94,95 @@ public class Client extends UserProfile {
    @Override
    public String checkAvailableSlot() {
       //todo pull dates already booked.
-      //todo once dates pulled in, add one day to get the next available slot.
+      //todo once dates pulled in, add one day to get the next available slot, set a limit of the number appointments that can be booked into one day. e.g. 5 appointments a day.
       return "04/04/21";
    }
 
-   @Override
-   public void generateOutput() {
-
+   public void generateOutput(String username, String password, String isUser) {
+      //print booking details
+      System.out.println("checkUser() IS WORKING " + username + " " + password);
+      System.out.println("***************************************************************");
+      System.out.println("DETAILS OF YOUR APPOINTMENT");
+      System.out.println("Your appointment is scheduled for: " + isUser.substring(isUser.indexOf("date="), isUser.indexOf(" ")).replace("date=", ""));
+      System.out.println("The estimated cost of work to be carried out is: " + isUser.substring(isUser.indexOf("£"), isUser.indexOf(",")));
    }
 
    @Override
-   public void acceptInput() {
+   public void acceptInput(String data) {
       Scanner scanner = new Scanner(System.in);
-      FireBaseUtilities db = new FireBaseUtilities();
-
-      db.run();
-
-      Object data = db.getPullDataFromFB();
-      System.out.println(data + "TEST");
-
       Client client = new Client();
       DecimalFormat df = new DecimalFormat("00.00");
-
-      System.out.println("Please enter your name: \n");
-      String name = scanner.nextLine();
-      System.out.println("Please enter your password: \n");
-      String password = scanner.nextLine();
-      System.out.println("Please provide an email address: \n");
-      String emailAddress = scanner.nextLine();
-      System.out.println("Please enter your phone number: \n");
-      String phone = scanner.nextLine();
-      DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");
-      LocalDateTime now = LocalDateTime.now();
-      System.out.println("Please enter the brand of your car");
-      String car = scanner.nextLine();
-      double carBrandCostAdjustment = client.addCarTypePremium(car);
-      System.out.println("Please describe what you need done to your car: \n");
-      String problem = scanner.nextLine();
-      double cost = client.calculateEstimate(problem);
-      double finalCost = cost * carBrandCostAdjustment;
-      String appointmentDate = client.checkAvailableSlot();
-      System.out.println("Your appointment has been scheduled for: " + appointmentDate + "\n" + "The estimated cost will be: " + "£" + df.format(finalCost) + "\n");
-      FireBaseUtilities clientDetails = new FireBaseUtilities();
-      clientDetails.sendChanges(name, password, emailAddress, phone, dtf.format(now), car, problem, "£" + df.format(finalCost), appointmentDate);
+      System.out.println("Are you an existing customer? (Y/N)");
+      String newCustomerCheck = scanner.nextLine().toLowerCase().trim();
+      if (newCustomerCheck.equals("y")){
+         System.out.println("please enter your username: ");
+         String username = scanner.nextLine();
+         System.out.println("please enter your password");
+         String password = scanner.nextLine();
+         String isUser = client.checkUser(data, username, password);
+         if (isUser != null){
+            //print booking details
+            generateOutput(username, password, isUser);
+         }
+      }
+      if(newCustomerCheck.equals("n")){
+         System.out.println("Please enter a new user name of your choice: ");
+         String userName = scanner.nextLine();
+         System.out.println("Please enter your name: \n");
+         String name = scanner.nextLine();
+         System.out.println("Please enter your password: \n");
+         String password = scanner.nextLine();
+         System.out.println("Please provide an email address: \n");
+         String emailAddress = scanner.nextLine();
+         System.out.println("Please enter your phone number: \n");
+         String phone = scanner.nextLine();
+         DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");
+         LocalDateTime now = LocalDateTime.now();
+         System.out.println("Please enter the brand of your car");
+         String car = scanner.nextLine();
+         double carBrandCostAdjustment = client.addCarTypePremium(car);
+         System.out.println("Please describe what you need done to your car: \n");
+         String problem = scanner.nextLine();
+         double cost = client.calculateEstimate(problem);
+         double finalCost = cost * carBrandCostAdjustment;
+         String appointmentDate = client.checkAvailableSlot();
+         System.out.println("Your appointment has been scheduled for: " + appointmentDate + "\n" + "The estimated cost will be: " + "£" + df.format(finalCost) + "\n");
+         FireBaseUtilities clientDetails = new FireBaseUtilities();
+         clientDetails.sendChanges(name, password, emailAddress, phone, dtf.format(now), car, problem, "£" + df.format(finalCost), appointmentDate, userName);
+      }
    }
+
+
 
    @Override
    public void saveToCSV() {
 
    }
-   //todo check if all the above are necesary
 
+   public String checkUser(String data, String user, String password){
+      String[] array = data.split("-M");
 
-
-   public String generateId(){
-      int id = nextUniqueID;
-      nextUniqueID = nextUniqueID +1;
-      return id + "";
+      for(int i = 0; i< array.length; i++){
+         if (array[i].contains(user)) {
+            if (array[i].contains(password)) {
+               System.out.println(array[i]);
+               return array[i];
+            }
+         }
+      }
+      return null;
    }
 
 
+   public String getFBData(String data){
+      if (data !=null){
+         System.out.println("Employees class getFBData contains: " + data);
+         return data;
+      } else {
+         return "didn't work";
+      }
+   }
 
-
+   //todo check if all the above are necesary
 
 }//class
