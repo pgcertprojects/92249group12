@@ -57,9 +57,7 @@ abstract public class UserProfile {
 
    public abstract String checkAvailableSlot();
 
-   public abstract void generateOutput();
-
-   public abstract void acceptInput();
+   public abstract void acceptInput(String data);
 
    public abstract void saveToCSV();
 
