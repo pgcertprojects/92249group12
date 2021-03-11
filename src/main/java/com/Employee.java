@@ -1,6 +1,7 @@
 package com;
 
 import java.text.DecimalFormat;
+import java.util.Scanner;
 
 /**
  * Created by William - BASIC on 06/03/2021
@@ -58,18 +59,23 @@ public class Employee {
 //         System.out.println(Arrays.toString(doubleNumberArray));
       }
 
-   public boolean checkUser(String data, String user, String password){
+   public boolean checkUser(String data){
       String[] array;
-      array = data.split("{");
+      array = data.split("[{]");
+      boolean userExists = false;
 
+      //System.out.println(data);
+      Scanner scanner = new Scanner(System.in);
+      System.out.println("Enter the person's username");
+      String user = scanner.nextLine();
+
+      //System.out.println(array[4]);
       for(int i = 0; i< array.length; i++){
          if (array[i].contains(user)) {
-            if (array[i].contains(password)) {
-               return true;
-            }
+            userExists = true;
          }
       }
-      return false;
+      return userExists;
    }
 
 }//class
