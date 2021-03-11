@@ -50,6 +50,7 @@ public class FireBaseUtilities implements Runnable {
                   employee.getFBData(check);
                   employee.getValueOfBookings(check);
                   System.out.println(employee.checkUser(check));
+                  employee.randomMethod(check);
                }
                else {
                   System.out.println("Leaving program");

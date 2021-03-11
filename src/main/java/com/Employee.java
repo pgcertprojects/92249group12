@@ -78,4 +78,8 @@ public class Employee {
       return userExists;
    }
 
+   public void randomMethod(String data){
+      System.out.println("This is the random method" + data);
+   }
+
 }//class
