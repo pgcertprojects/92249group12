@@ -68,7 +68,7 @@ public class Client extends UserProfile {
 
    }//checkCredentials
 
-   public static double addCarTypePremium(String car){
+   protected static double addCarTypePremium(String car){
       // Receives a car to search for. Binary searches the first array in a parallel array set.
       // Returns the value stored in the indexed position from the modifier array if found. Other returns 1.0.
 
@@ -76,36 +76,9 @@ public class Client extends UserProfile {
       int workingNumber, top, bottom, middle;
 
       // Declare parallel array of car types and their associated price modifier.
-      String [] brand = {
-            "abarth", "ac", "aixam", "alfa romeo", "alpine", "asia", "aston martin", "audi", "austin", //A (9) = 0-8
-            "bentley", "bmw", "bristol", "bugatti", //B (4) = 9-12
-            "cadillac", "callaway", "caterham", "chrysler", "citroen", "coleman milne", "corvette", "cupra", //C (8) = 13-20
-            "dacia", "daewoo", "daimler", "de tomaso", "dfsk", "dihatsu", "dodge", "ds", //D (8) = 21-28
-            "eagle", //E (1) = 29
-            "farbio", "fbs", "ferrari", "fiat", "ford", "fso", //F (6) = 30-35
-            //G (0)
-            "honda", "hummer", "hyundai", //H (3) = 36-38
-            "infiniti", "invicta", "isuzu", //I (3) = 39-41
-            "jaguar", "jeep", "jenson", //J (3) = 42-44
-            "kia", "ktm", //K (2) = 45-46
-            "lada", "lamborghini", "lancia", "land rover", "levc", "lexus", "ligier", "lotus", "lti", "lynk", //L (10) = 47-56
-            "mahindra", "marcos", "marlin", "maserati", "maybeach", "mazda", "mclaren", "mercedes", "mg", "mia", "microcar", "mini",
-            "mitsubishi", "morgan", //M (14) = 57-70
-            "nissan", "noble", //N (2) = 71-72
-            "opel", //O (1) = 73
-            "perodua", "peugeot", "pgo", "polestar", "porsche", "prindiville", "proton", //P (7) = 74-80
-            //Q (0)
-            "reliant", "renault", "rolls royce", "rover", //R (4) = 81-84
-            "saab", "san", "sao", "seat", "skoda", "smart", "ssangyong", "subaru", "suzuki", //S (9) = 85-93
-            "talbot", "td cars", "tesla", "toyota", "tvr", //T (5) = 94-98
-            //U (0)
-            "vauxhall", "volkswagen", "volvo", //V (3) = 99-101
-            "westfield", //W (1) = 102
-            //X (0)
-            "yugo" //Y (1) = 103
-            //Z (0)
-      };
-      double [] costModifier = {
+      String [] brand = Inventory.getBrand();
+
+      double [] labourCostModifier = {
             1.5, 0.9, 0.8, 1.2, 1.0, 0.8, 3.0, 2.0, 1.4, //A (9) = 0-8
             2.5, 2.0, 1.0, 3.5, //B (4) = 9-12
             1.8, 1.2, 1.2, 1.0, 0.9, 1.0, 2.8, 1.1, //C (8) = 13-20
@@ -149,7 +122,7 @@ public class Client extends UserProfile {
          workingNumber = car.toLowerCase().compareTo(brand[middle]);
 
          if (workingNumber == 0) {
-            return costModifier[middle];
+            return labourCostModifier[middle];
          } else if (workingNumber > 0) {
             bottom = middle + 1;
          } else {
@@ -161,23 +134,20 @@ public class Client extends UserProfile {
       return 1.0;
    }//addCarTypePremium
 
-
-   public static double calculateEstimate(String problem){
+   protected static double calculateEstimate(String problem, String car){
       // Receives a problem to search for. Linear searches the first array in a parallel array set, defaults to 150.
       // Then linear searches for the problemType which defaults to repair if not found.
       // Then takes these index positions and returns the cost found in the 2D array.
 
-      //!!NOTE: We could move the costList, problemList and problemType into static variables and call them into this method.
-      // This would allow calling of the data into report printouts.
-
       // Declare and initialise variables
-      double cost = 0;
+      double cost = 0, carPremium = 1, labourCosts = 0, postageCosts = 0;
+      String priority = null;
       boolean found = false;
       String [] problemList = { "air conditioning", "air filter", "alloys", "alternator", "belts", "bodywork", "brake discs", "brake fluid", "brake pads", "brakes", //0-9
             "bulbs", "clutch", "coilpack", "coolant", "dent", "flywheel", "fuel pump", "ignition", "ignitioncoils", "inspection", //10-19
             "license plate", "mot", "oil", "oil filter", "paint", "radiator", "scratches", "service", "shock absorbers", "spark plugs", //20-29
             "springs", "starter", "suspension", "timing", "timingbelt", "transmission", "transmission fluid", "tyres", "turbo", "water pump", //30-39
-            "wheel bearing", "windscreen"}; //40-41
+            "wheel bearing", "windscreen", ""}; //40-41
       int [] clientProblems = {42,42,42,42,42};
       int clientProblemCount = 0;
       String [] problemType = {"inspect", "repair", "replace"}; //default to repair
@@ -236,7 +206,7 @@ public class Client extends UserProfile {
 
       //Finding the problemType, defaults to repair if not found.
       int count = 0;
-      while ((!found) || (count < problemType.length)) {
+      while ((!found) && (count < problemType.length)) {
          if (problem.contains(problemType[count])) {
             found = true;
             jobType = count;
@@ -264,7 +234,41 @@ public class Client extends UserProfile {
          cost = cost + costList[clientProblems[index]][jobType];
       }//for
 
-      return cost; //Note that the car type cost modifier must be applied in a subsequent method.
+      //Calculating car premium and using this to modify labour costs.
+      carPremium = addCarTypePremium(car);
+      labourCosts = cost + (cost * carPremium);
+
+      System.out.println("\nHow fast do you require the work to be done? ");
+      System.out.println("\t(Please enter standard, fast or emergency. Default value = standard)");
+      System.out.println("\t(Note there is some automatic phrase detection for alternative responses.)");
+      System.out.print("Response: ");
+      priority = Inventory.keyboard.next().toLowerCase();
+      //Outputting calculations to user
+      System.out.println("\nCalculating estimate for:");
+      System.out.println("Car:\t\t\t" + car);
+      System.out.println("Problem:\t\t" + problem);
+      System.out.println("Job Priority:\t" + priority);
+      System.out.println("\n***Labour and Parts Costs***");
+      System.out.println("\tDetected Jobs:");
+      for (int index = 0; index < clientProblems.length; index++) {
+         System.out.println("\t\t" + (index + 1) + ")\t" + problemList[clientProblems[index]]);
+      }//for
+      System.out.println("\tDetected Job Type:\t" + problemType[jobType]);
+      System.out.println("\tLabour costs:\t\t£" + Inventory.currency.format(cost));
+      System.out.println("\tCar type modifier:\t" + (carPremium * 100) + "%");
+      System.out.println("\nTotal Labour Costs:\t£" + labourCosts);
+
+      //Calculating parts postage cost if required.
+      System.out.println("***Parts Postage Costs***");
+      postageCosts = Inventory.calculatePostageCost(car, problem, priority);
+      if (postageCosts == 0) {
+         System.out.println("\tNo postage costs / postage for small consumables included.");
+      }//if
+      //Calculating, storing and outputting total
+      cost = labourCosts + postageCosts;
+      System.out.println("Overall total estimate: £" + Inventory.currency.format(cost));
+
+      return cost;
    }//calculateEstimate
 
    @Override
@@ -314,13 +318,13 @@ public class Client extends UserProfile {
          String phone = scanner.nextLine();
          DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");
          LocalDateTime now = LocalDateTime.now();
-         System.out.println("Please enter the brand of your car");
+         System.out.println("Please enter the brand of your car: \n");
          String car = scanner.nextLine();
          double carBrandCostAdjustment = client.addCarTypePremium(car);
-         System.out.println("Please describe what you need done to your car: \n");
+         System.out.println("Please describe what you need done to your car ");
+         System.out.println("(No more than 5 problems of a single type): \n");
          String problem = scanner.nextLine();
-         double cost = client.calculateEstimate(problem);
-         double finalCost = cost * carBrandCostAdjustment;
+         double finalCost = client.calculateEstimate(problem, car);
          String appointmentDate = client.checkAvailableSlot();
          System.out.println("Your appointment has been scheduled for: " + appointmentDate + "\n" + "The estimated cost will be: " + "£" + df.format(finalCost) + "\n");
          FireBaseUtilities clientDetails = new FireBaseUtilities();
