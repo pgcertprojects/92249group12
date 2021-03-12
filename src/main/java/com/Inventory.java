@@ -6,42 +6,43 @@ import java.util.Scanner;
 /**
  * Created by Chris on 10/03/2021
  * Class which searches for car origin country, parts in client problem and then generates an estimate of parts + postage.
+ * This class performs static operations on dynamic elements which are passed in from the client class.
  **/
 public class Inventory {
 
-   //Declaring objects
+   //Declaring objects for reading user input and formatting currency/percentages.
    static protected Scanner keyboard = new Scanner(System.in);
    static protected DecimalFormat currency = new DecimalFormat("0.00");
    static protected DecimalFormat percent = new DecimalFormat("00.0");
 
-   //Declare constants
-   static final double MARKUP = 1.15;
+   //Declaring and initialising constants
+   static protected final double MARKUP = 1.15;
 
-   //Declare and initialise 1D arrays
-   static private String [] postagePriority = {"economy", "priority", "express"};
-   static private String [] postageSize = {"letter", "parcel ", "pallet"};
-   static private String [] supplier = {"American Auto Inc          ", "Car Parts Importers NI Ltd ", "Europa DasAuto gmbh        ", "GB Mechanical Suppliers Ltd", "Irish Motor Supplies Ltd   ", "Worldwide Automotive Ltd   "};
+   //Declaring and initialising 1 dimensional arrays
+   private static String [] postagePriority = {"economy", "priority", "express"};
+   private static String [] postageSize = {"letter", "parcel ", "pallet"};
+   private static String [] supplier = {"American Auto Inc          ", "Car Parts Importers NI Ltd ", "Europa DasAuto gmbh        ", "GB Mechanical Suppliers Ltd", "Irish Motor Supplies Ltd   ", "Worldwide Automotive Ltd   "};
 
-   //Declare and initialise Parallel 1D array 1: nationalities and nationalitySupplier
-   static private String [] nationalities = {"american", "austrian", "british", "chinese", "czech", "default", "european", "french", "german", "indian", //0-9
+   //Declaring and initialising a one dimensional parallel array set (Parallel array 1: nationalities and nationalitySupplier)
+   private static String [] nationalities = {"american", "austrian", "british", "chinese", "czech", "default", "european", "french", "german", "indian", //0-9
          "italian", "japanese", "korean", "polish", "russian", "malaysian", "south african", "spanish", "swedish" //10-18
-   };
-   static private int [] nationalitySupplier = {0, 2, 3, 1, 2, 2, 2, 2, 2, 4, 2, 1, 1, 2, 2, 4, 4, 2, 2};
+   };//nationalities
+   private static int [] nationalitySupplier = {0, 2, 3, 1, 2, 2, 2, 2, 2, 4, 2, 1, 1, 2, 2, 4, 4, 2, 2};
 
-   //Declare and initialise Parallel 1D array 2: carParts & carPartsSize
-   static private String [] carParts = {"air con", "air filter", "alloys", "alternator", "belts", "bodywork", "brake discs", "brake fluid", "brake pads", "brakes", //0-9
+   //Declaring and initialising a one dimensional parallel array set (Parallel array 2: carParts & carPartsSize)
+   private static String [] carParts = {"air con", "air filter", "alloys", "alternator", "belts", "bodywork", "brake discs", "brake fluid", "brake pads", "brakes", //0-9
          "bulbs", "clutch", "coilpack", "coolant", "default", "flywheel", "fuel pump", "ignition", "ignitioncoils", "license plate", //10-19
          "oil", "oil filter", "paint", "radiator", "shock absorbers", "spark plugs", "springs", "starter", "suspension", "timing", //20-29
          "timingbelt", "transmission", "transmission fluid", "tyres", "turbo", "water pump", "wheel bearing", "windscreen", "none"//30-38
-   };
-   static private int [] carPartsSize = {1, 1, 2, 1, 1, 2, 1, 1, 1, 1, //0-9
+   };//carParts
+   private static int [] carPartsSize = {1, 1, 2, 1, 1, 2, 1, 1, 1, 1, //0-9
          0, 1, 1, 1, 1, 1, 1, 1, 1, 1, //10-19
          1, 1, 1, 2, 2, 1, 2, 1, 2, 0, //20-29
          1, 2, 1, 2, 1, 1, 1, 2, 0//30-38
-   };
+   };//carPartsSize
 
-   //Declare and initialise Parallel 1D array 3: carBrand & carNationality
-   static private String [] carBrand = {
+   //Declaring and initialising a one dimensional parallel array set (Parallel array 3: carBrand & carNationality)
+   private static String [] carBrand = {
          //Parallel array containing the brands of cars for detection.
          "abarth", "ac", "aixam", "alfa romeo", "alpine", "asia", "aston martin", "audi", "austin", //A (9) = 0-8
          "bentley", "bmw", "bristol", "bugatti", //B (4) = 9-12
@@ -70,9 +71,9 @@ public class Inventory {
          //X (0)
          "yugo" //Y (1) = 103
          //Z (0)
-   };
+   };//carBrand
 
-   static private String [] carNationality = {
+   private static String [] carNationality = {
          //Parallel array of carBrand containing nationalities/country of parts of the indexed positions.
          "italian", "british", "french", "italiano", "french", "korean", "british", "german", "british", //A (9) = 0-8
          "british", "german", "british", "french", //B (4) = 9-12
@@ -101,27 +102,27 @@ public class Inventory {
          //X (0)
          "italian" //Y (1) = 103
          //Z (0)
-   };
+   };//carNationality
 
    //Declare and initialise 3D array
-   static private double [] [] [] supplierPostage = {
+   private static double [] [] [] supplierPostage = {
          //3D array containing postage prices for 6 suppliers, each has 3 priorities of mail sending and 3 postage sizes.
-         {//letter
+         {
                {5.00, 1.00, 3.00, 1.00, 1.50, 5.00},//economy
                {10.00, 5.00, 6.00, 2.00, 3.69, 10.00},//priority
                {40.00, 10.00, 12.50, 5.00, 6.50, 60.00},//express
-         },
-         {//parcel
+         },//letter
+         {
                {20.00, 2.00, 10.50, 5.00, 5.00, 25.00},//economy
                {60.00, 7.50, 15.60, 7.00, 7.50, 65.00},//priority
                {100.00, 15.00, 20.00, 10.00, 11.00, 110.00},//express
-         },
-         {//pallet
+         },//parcel
+         {
                {60.00, 20.00, 50.00, 40.00, 30.00, 80.00},//economy
                {120.00, 40.00, 80.00, 65.00, 45.00, 175.00},//priority
                {200.00, 50.00, 150.00, 100.00, 70.00, 250.00},//express
-         }
-   };
+         }//pallet
+   };//supplierPostage
 
    //Get methods for accessing class static variables outside of class.
    protected static String [] getBrand() {
@@ -274,38 +275,23 @@ public class Inventory {
    }//generateCarNationality
 
    private static int generatePostagePriority(String priority) {
-      //Detects common phrases that are used to describe priority and returns a standardised response.
-      boolean found = false;
-      int newPriority = 0;
-      String [] low = {"basic", "economy", "slow", "low", "standard"};
+      // Detects common phrases that are used to describe priority and returns a standardised response.
+      // Declare and initialise method variables
+      int newPriority = 0, test0, test1, test2; //Defaults to lowest priority
+      //String [] low = {"basic", "economy", "slow", "low", "standard"};
       String [] medium = {"fast", "urgent", "priority"};
       String [] high = {"fastest", "nextday", "next day", "express", "emergency"};
 
-      for (int index = 0; index < low.length; index++) {
-         if (low[index].equals(priority)) {
-            found = true;
-            newPriority = 0;
-            break;
-         }//if
-      }//for
-      if (!found) {
-         for (int index = 0; index < medium.length; index++) {
-            if (medium[index].equals(priority)) {
-               found = true;
-               newPriority = 1;
-               break;
-            }//if
-         }//for
-      }//if
-      if (!found) {
-         for (int index = 0; index < high.length; index++) {
-            if (high[index].equals(priority)) {
-               found = true;
-               newPriority = 2;
-               break;
-            }//if
-         }//for
-      }//if
+      //test0 = searchPostagePhrases(priority, low, 0);
+      test1 = Helper.searchPostagePhrases(priority, medium, 1);
+      test2 = Helper.searchPostagePhrases(priority, high, 2);
+
+      if(test2 > newPriority) {
+         newPriority = test2;
+      } else if (test1 > newPriority) {
+         newPriority = test1;
+      }//else-if
+
       return newPriority;
    }//generatePostagePriority
 
@@ -314,7 +300,17 @@ public class Inventory {
       return (cost * MARKUP) - cost;
    }//generateMarkup
 
+   private static String capitalise(String str) {
+      if((str == null) || (str.isEmpty())) {
+         return str;
+      }//if
+      return str.substring(0, 1).toUpperCase() + str.substring(1);
+   }//capitalise
+
    protected static double calculatePostageCost(String car, String problem, String priority) {
+      // Method which is called statically from the calculateEstimate() method in client.
+      // Calculates postage costs for new clients in order to generate their total cost which is held as an instance variable.
+
       //Declare method variables
       double partsCost = 0, finalPartsCost = 0, markup = 0;
       String carNationality;
@@ -336,13 +332,13 @@ public class Inventory {
 
          //Outputting calculations and detected postage requirements
          System.out.println("\n***Postage Costs***");
-         System.out.println("\tCar Parts Origin:\t\t" + carNationality);
+         System.out.println("\tCar Parts Origin:\t\t" + capitalise(carNationality));
          System.out.println("\tPostage Priority:\t\t" + getIndexedPostagePriority(postagePriority));
          System.out.println("\tParts List:");
          for (int index = 0; index < partsRequired.length; index++) {
-            System.out.println("\t\t" + (index + 1) + ")\t" + carParts[partsRequired[index]]);
+            System.out.println("\t\t" + (index + 1) + ")\t" + capitalise(carParts[partsRequired[index]]));
          }//for
-         System.out.println("\tLargest part size:\t\t" + getIndexedPostageSize(maxSize));
+         System.out.println("\tLargest part size:\t\t" + capitalise(getIndexedPostageSize(maxSize)));
          System.out.println("\tSupplier:\t\t\t\t" + getIndexedSupplier(supplier));
          System.out.println("\tPostage Cost:\t\t\t£" + currency.format(partsCost));
          System.out.println("\tMechanic admin markup:\t" + percent.format((MARKUP - 1) * 100) + "%");
@@ -354,8 +350,4 @@ public class Inventory {
          return finalPartsCost = 0;
       }//if-else
    }//calculatePostageCost
-
-   public static void main(String [] args) {
-   }//main
-
 }//class
