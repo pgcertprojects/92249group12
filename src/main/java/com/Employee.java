@@ -80,6 +80,9 @@ public class Employee {
 
    public void randomMethod(String data){
       System.out.println("This is the random method" + data);
+      Inventory.printPostageCosts();
    }
+
+
 
 }//class
