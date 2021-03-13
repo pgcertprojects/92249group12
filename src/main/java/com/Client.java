@@ -68,7 +68,7 @@ public class Client extends UserProfile {
 
    }//checkCredentials
 
-   protected static double calculateEstimate(String problem, String car){
+   protected double calculateEstimate(String problem, String car){
       // Receives a problem to search for. Linear searches the first array in a parallel array set, defaults to 150.
       // Then linear searches for the problemType which defaults to repair if not found.
       // Then takes these index positions and returns the cost found in the 2D array.
