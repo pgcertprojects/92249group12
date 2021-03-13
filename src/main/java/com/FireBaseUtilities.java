@@ -48,9 +48,11 @@ public class FireBaseUtilities implements Runnable {
                if (code == 3505){
                   Employee employee = new Employee();
                   employee.getFBData(check);
+                  System.out.println("Printing a list of all the current appointments");
+                  employee.printAllAppointments(check);
                   employee.getValueOfBookings(check);
                   System.out.println(employee.checkUser(check));
-                  employee.randomMethod(check);
+                  //employee.randomMethod(check);
                }
                else {
                   System.out.println("Leaving program");
