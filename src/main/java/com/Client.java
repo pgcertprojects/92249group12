@@ -74,15 +74,15 @@ public class Client extends UserProfile {
       // Then takes these index positions and returns the cost found in the 2D array.
 
       // Declare and initialise variables
-      double cost = 0, carPremium = 1, labourCosts = 0, postageCosts = 0;
-      String priority = null;
+      double cost = 0, carPremium = 1, labourCosts = 0, postageCosts = 0, discount = 0;
+      String priority = null, responseDiscount;
       boolean found = false;
       String [] problemList = { "air conditioning", "air filter", "alloys", "alternator", "belts", "bodywork", "brake discs", "brake fluid", "brake pads", "brakes", //0-9
-            "bulbs", "clutch", "coilpack", "coolant", "dent", "flywheel", "fuel pump", "ignition", "ignitioncoils", "inspection", //10-19
+            "bulbs", "clutch", "coilpack", "coolant", "dent", "flywheel", "fuel pump", "ignition", "ignitioncoils", "inspect", //10-19
             "license plate", "mot", "oil", "oil filter", "paint", "radiator", "scratches", "service", "shock absorbers", "spark plugs", //20-29
             "springs", "starter", "suspension", "timing", "timingbelt", "transmission", "transmission fluid", "tyres", "turbo", "water pump", //30-39
             "wheel bearing", "windscreen", ""}; //40-41
-      int [] clientProblems = {42,42,42,42,42};
+      int [] clientProblems = {19,42,42,42,42};
       int clientProblemCount = 0;
       String [] problemType = {"inspect", "repair", "replace"}; //default to repair
       int jobType = 0;
@@ -170,8 +170,9 @@ public class Client extends UserProfile {
 
       //Calculating car premium and using this to modify labour costs.
       carPremium = Helper.addCarTypePremium(car);
-      labourCosts = cost + (cost * carPremium);
+      labourCosts = cost * carPremium;
 
+      //Prompting user for response and accepting their input
       System.out.println("\nHow fast do you require the work to be done? ");
       System.out.println("\t(Please enter standard, fast or emergency. Default value = standard)");
       System.out.println("\t(Note there is some automatic phrase detection for alternative responses.)");
@@ -193,14 +194,29 @@ public class Client extends UserProfile {
       System.out.println("\nTotal Labour Costs:\t£" + labourCosts);
 
       //Calculating parts postage cost if required.
-      System.out.println("***Parts Postage Costs***");
+      System.out.println("\n***Parts Postage Costs***");
       postageCosts = Inventory.calculatePostageCost(car, problem, priority);
       if (postageCosts == 0) {
-         System.out.println("\tNo postage costs / postage for small consumables included.");
+         System.out.println("\tNo postage costs / postage for small consumables included in labour costs");
       }//if
       //Calculating, storing and outputting total
       cost = labourCosts + postageCosts;
-      System.out.println("Overall total estimate: £" + Inventory.currency.format(cost));
+
+      //Asking user for discount code
+      System.out.println("Do you have a discount code (please enter y or n): ");
+      responseDiscount = Inventory.keyboard.next().toLowerCase();
+      if (responseDiscount.equals("y")) {
+         discount = Inventory.discountCode();
+         cost = cost - discount;
+      } else if(responseDiscount.equals("n")) {
+         System.out.println("No discount code selected. ");
+      } else {
+         System.out.println("Invalid response. Continuing without discount");
+      }//else
+
+      System.out.println("\n***Overall Cost Estimate***");
+      System.out.println("Estimate: £" + Inventory.currency.format(cost));
+      System.out.println("(Note that this is just an estimate and that actual prices incurred may vary.)\n");
 
       return cost;
    }//calculateEstimate
@@ -255,7 +271,8 @@ public class Client extends UserProfile {
          System.out.println("Please enter the brand of your car: \n");
          String car = scanner.nextLine();
          System.out.println("Please describe what you need done to your car ");
-         System.out.println("(No more than 5 problems of a single type): \n");
+         System.out.println("\t(Pleas describe the type of problem using either \"inspect\", \"repair\" or \"replace\" keywords");
+         System.out.println("\t(Only 1 type of job of no more than 5 problems/jobs per appointment please.\nResponse: \n");
          String problem = scanner.nextLine();
          double finalCost = client.calculateEstimate(problem, car);
          String appointmentDate = client.checkAvailableSlot();

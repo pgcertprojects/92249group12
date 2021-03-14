@@ -1,6 +1,7 @@
 package com;
 
 import java.text.DecimalFormat;
+import java.util.InputMismatchException;
 import java.util.Scanner;
 
 /**
@@ -49,7 +50,7 @@ public class Inventory {
    //Declaring and initialising a one dimensional parallel array set (Parallel array 2: carParts & carPartsSize)
    private static String [] carParts = {
          "air con", "air filter", "alloys", "alternator", "belts", "bodywork", "brake discs", "brake fluid", "brake pads", "brakes", //0-9
-         "bulbs", "clutch", "coilpack", "coolant", "default", "flywheel", "fuel pump", "ignition", "ignitioncoils", "license plate", //10-19
+         "bulbs", "clutch", "coilpack", "coolant", "essential minor parts", "flywheel", "fuel pump", "ignition", "ignitioncoils", "license plate", //10-19
          "oil", "oil filter", "paint", "radiator", "shock absorbers", "spark plugs", "springs", "starter", "suspension", "timing", //20-29
          "timingbelt", "transmission", "transmission fluid", "tyres", "turbo", "water pump", "wheel bearing", "windscreen", "none"//30-38
    };//carParts
@@ -353,6 +354,57 @@ public class Inventory {
       return newPriority;
    }//generatePostagePriority
 
+   protected static double discountCode() {
+      //Method which calculates and returns a discount value depending on user response.
+      //A linear search of a parallel array search is carried out whilst looking for the code.
+      //When a value is found, or not found, the loop returns a value which runs through the switch.
+      //The switch then displays a message and returns a value to the calling method.
+
+      //Declaring variables
+      double discount;
+      int responseCode = 0;
+      int [] discountCases = {1,2,3,4};
+      int [] discountCodes = {823748230, 839420387, 294303478, 983423487};
+      int caseResponse = 0;
+
+      //Try catch to handle mismatching data types.
+      try {
+         //Prompting and reading for the code. Throws error if string or double is entered.
+         System.out.println("What is the 9 digit numeric code: ");
+         responseCode = Inventory.keyboard.nextInt();
+
+         //Searching parallel arrays for response.
+         for (int index = 0; index < discountCases.length; index++) {
+            if(responseCode == (discountCodes[index])) {
+               caseResponse = discountCases[index];
+            }//for
+         }//for
+
+         //Running switch to determine discount value.
+         switch (caseResponse) {
+            case 1:case2:
+            System.out.println("You have £20 off. ");
+               discount = 20;
+               break;
+            case 3:
+               System.out.println("You have £10 off. ");
+               discount = 10;
+               break;
+            case 4:
+               System.out.println("You have £5 off. ");
+               discount = 5;
+               break;
+            default:
+               System.out.println("Invalid code. Continuing without discount");
+               discount = 0;
+         }//switch
+         return discount;
+      } catch(InputMismatchException e) {
+         System.out.println("ERROR: code not an integer, continuing without discount ");
+      }//catch
+      return 0;
+   }//discountCode()
+
    private static double generateMarkup(double cost) {
       //Calculates and returns the cost of markup for the job to the client including admin costs for the company.
       return (cost * MARKUP) - cost;
@@ -408,7 +460,6 @@ public class Inventory {
          cost = markup + partsCost;
 
          //Outputting calculations and detected postage requirements using a mixture of data from that stored in arrays and in objects
-         System.out.println("\n***Postage Costs***");
          System.out.println("\tCar Parts Origin:\t\t" + capitalise(carNationality));
          System.out.println("\tPostage Priority:\t\t" + getIndexedPostagePriority(postagePriority));
          System.out.println("\tParts List:");
@@ -419,7 +470,7 @@ public class Inventory {
          System.out.println("\tSupplier:\t\t\t\t" + getIndexedSupplier(supplier));
          System.out.println("\tPostage Cost:\t\t\t£" + currency.format(partsCost));
          System.out.println("\tMechanic admin markup:\t" + percent.format((MARKUP - 1) * 100) + "%");
-         System.out.println("\tMechanic admin charge:\t£" + currency.format(cost));
+         System.out.println("\tMechanic admin charge:\t£" + currency.format(markup));
 
          //Swapping the values of cost and finalPartsCost without using a third variable
          finalPartsCost = finalPartsCost + cost;   //x = x + y
