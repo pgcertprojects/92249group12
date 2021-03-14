@@ -192,6 +192,7 @@ public class Inventory {
    protected static void printPostageCosts() {
       //Prints values from the 3D array for a breakdown of postage costs from supplier by size and priority.
       //Header and ia are set to 1 to avoid printing the "none" values which are all 0.
+
       System.out.print("\n\t\t\t\t\t\t");
       for (int header = 1; header < postageSize.length; header++) {
          System.out.print("\t\t" + postageSize[header]);
@@ -382,7 +383,7 @@ public class Inventory {
 
          //Running switch to determine discount value.
          switch (caseResponse) {
-            case 1:case2:
+            case 1:case 2:
             System.out.println("You have £20 off. ");
                discount = 20;
                break;

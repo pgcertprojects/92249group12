@@ -77,7 +77,7 @@ public class Client extends UserProfile {
       double cost = 0, carPremium = 1, labourCosts = 0, postageCosts = 0, discount = 0;
       String priority = null, responseDiscount;
       boolean found = false;
-      String [] problemList = { "air conditioning", "air filter", "alloys", "alternator", "belts", "bodywork", "brake discs", "brake fluid", "brake pads", "brakes", //0-9
+      String [] problemList = { "air con", "air filter", "alloys", "alternator", "belts", "bodywork", "brake discs", "brake fluid", "brake pads", "brakes", //0-9
             "bulbs", "clutch", "coilpack", "coolant", "dent", "flywheel", "fuel pump", "ignition", "ignitioncoils", "inspect", //10-19
             "license plate", "mot", "oil", "oil filter", "paint", "radiator", "scratches", "service", "shock absorbers", "spark plugs", //20-29
             "springs", "starter", "suspension", "timing", "timingbelt", "transmission", "transmission fluid", "tyres", "turbo", "water pump", //30-39
@@ -152,10 +152,10 @@ public class Client extends UserProfile {
       }//if
 
       //Finding the clientProblems via linear search and adding the indexes of these to a list of client problems.
-      for (int index = 0; index < problemList.length; index++) {
+      for (int index = 0; (index < problemList.length) && (clientProblemCount < 5); index++) {
          if (problem.contains(problemList[index])) {
+            clientProblems[clientProblemCount] = index;
             clientProblemCount += 1;
-            clientProblems[clientProblemCount -1] = index;
          }//if
       }//for
       if (clientProblemCount == 0) {
