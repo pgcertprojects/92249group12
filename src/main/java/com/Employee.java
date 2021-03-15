@@ -19,6 +19,50 @@ public class Employee {
       }
    }
 
+   public void chooseMethod(String data){
+      boolean runMethod = true;
+      int choice;
+      char performAnother;
+
+      System.out.print("Which action would you like to perform?\n1.\tGet the total value of current bookings\n" +
+              "2.\tPrint out all upcoming bookings\n3.\tCheck a customer's appointment details\n\nEnter:\t");
+
+      Scanner scanner = new Scanner(System.in);
+      choice = scanner.nextInt();
+
+      do
+      {
+         switch (choice)
+         {
+            case 1:
+               getValueOfBookings(data);
+               break;
+            case 2:
+               printAllAppointments(data);
+               break;
+            case 3:
+               System.out.println(checkUser(data));
+               break;
+            default:
+               System.out.println("Please enter a valid selection");
+               choice = scanner.nextInt();
+               break;
+         }//switch
+         scanner.nextLine();
+         System.out.println("Would you like to perform another action? Y/N");
+         performAnother = scanner.nextLine().charAt(0);
+         if ((performAnother == 'y') || (performAnother == 'Y'))
+         {
+            System.out.print("Which action would you like to perform?\n1.\tGet the total value of current bookings\n" +
+                    "2.\tPrint out all upcoming bookings\n3.\tCheck a customer's appointment details\n\nEnter:\t");
+            choice = scanner.nextInt();
+         }
+         else
+            runMethod = false;
+      }//do
+      while(runMethod);
+   }//chooseMethod
+
    public void getValueOfBookings(String data){
       DecimalFormat df = new DecimalFormat("£0.00");
 //      System.out.println("IN THE getValueOfBookings(): " + data);
@@ -56,13 +100,15 @@ public class Employee {
       System.out.println("Total number of bookings: " + size);
       System.out.println("Average value of bookings: " + df.format(total/size));
       System.out.println("Total value of bookings: " + df.format(total));
-      System.out.println("************************************");
+      System.out.println("************************************\n\n");
 //         System.out.println(Arrays.toString(doubleNumberArray));
       }
 
    public void printAllAppointments(String data){
       String [] array;
       array = data.split("-M");
+
+      System.out.println("Printing a list of all the current appointments");
 
       String [] dateArray = new String[array.length];
       String [] nameArray = new String[array.length];
@@ -83,8 +129,8 @@ public class Employee {
             }
          }
       }//for
-      System.out.println(Arrays.toString(dateArray));
-      System.out.println(Arrays.toString(nameArray));
+      //System.out.println(Arrays.toString(dateArray));
+      //System.out.println(Arrays.toString(nameArray));
       //System.out.println(dateArray.length);
    }//printAllAppointments
 

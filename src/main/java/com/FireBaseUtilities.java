@@ -2,6 +2,8 @@ package com;
 
 
 import com.google.firebase.database.*;
+import org.apache.commons.lang3.ObjectUtils;
+
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Scanner;
@@ -30,8 +32,9 @@ public class FireBaseUtilities implements Runnable {
             System.out.print("Error: " + error.getMessage());
          }
       });
+
       try {
-         Thread.sleep(5000);
+         Thread.sleep(10000);
          String check = object[0].toString();
          if(check != null){
             System.out.println("Firebase link established");
@@ -48,11 +51,7 @@ public class FireBaseUtilities implements Runnable {
                if (code == 3505){
                   Employee employee = new Employee();
                   employee.getFBData(check);
-                  System.out.println("Printing a list of all the current appointments");
-                  employee.printAllAppointments(check);
-                  employee.getValueOfBookings(check);
-                  System.out.println(employee.checkUser(check));
-                  //employee.randomMethod(check);
+                  employee.chooseMethod(check);
                }
                else {
                   System.out.println("Leaving program");
