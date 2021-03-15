@@ -18,6 +18,7 @@ public class Employee {
    }
 
    public void getValueOfBookings(String data){
+
       DecimalFormat df = new DecimalFormat("£0.00");
 //      System.out.println("IN THE getValueOfBookings(): " + data);
       String[] array;
@@ -58,18 +59,19 @@ public class Employee {
 //         System.out.println(Arrays.toString(doubleNumberArray));
       }
 
-   public boolean checkUser(String data, String user, String password){
-      String[] array;
-      array = data.split("{");
+      //might not need this checkUser for employees (just clients)
+   public String checkUser(String data, String user, String password){
+      String[] array = data.split("-M");
 
       for(int i = 0; i< array.length; i++){
          if (array[i].contains(user)) {
             if (array[i].contains(password)) {
-               return true;
+               System.out.println(array[i]);
+               return array[i];
             }
          }
       }
-      return false;
+      return null;
    }
 
 }//class
