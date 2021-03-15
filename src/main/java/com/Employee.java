@@ -25,7 +25,7 @@ public class Employee {
       char performAnother;
 
       System.out.print("Which action would you like to perform?\n1.\tGet the total value of current bookings\n" +
-              "2.\tPrint out all upcoming bookings\n3.\tCheck a customer's appointment details\n\nEnter:\t");
+              "2.\tPrint out all upcoming bookings\n3.\tCheck a customer's appointment details\n4.\tPrint total postage costs\n\nEnter:\t");
 
       Scanner scanner = new Scanner(System.in);
       choice = scanner.nextInt();
@@ -43,6 +43,9 @@ public class Employee {
             case 3:
                System.out.println(checkUser(data));
                break;
+            case 4:
+               printPostage(data);
+               break;
             default:
                System.out.println("Please enter a valid selection");
                choice = scanner.nextInt();
@@ -54,7 +57,7 @@ public class Employee {
          if ((performAnother == 'y') || (performAnother == 'Y'))
          {
             System.out.print("Which action would you like to perform?\n1.\tGet the total value of current bookings\n" +
-                    "2.\tPrint out all upcoming bookings\n3.\tCheck a customer's appointment details\n\nEnter:\t");
+                    "2.\tPrint out all upcoming bookings\n3.\tCheck a customer's appointment details\n4.\tPrint total postage costs\n\nEnter:\t");
             choice = scanner.nextInt();
          }
          else
@@ -63,7 +66,7 @@ public class Employee {
       while(runMethod);
    }//chooseMethod
 
-   public void getValueOfBookings(String data){
+   private void getValueOfBookings(String data){
       DecimalFormat df = new DecimalFormat("£0.00");
 //      System.out.println("IN THE getValueOfBookings(): " + data);
       String[] array;
@@ -104,7 +107,7 @@ public class Employee {
 //         System.out.println(Arrays.toString(doubleNumberArray));
       }
 
-   public void printAllAppointments(String data){
+   private void printAllAppointments(String data){
       String [] array;
       array = data.split("-M");
 
@@ -134,27 +137,28 @@ public class Employee {
       //System.out.println(dateArray.length);
    }//printAllAppointments
 
-   public boolean checkUser(String data){
+   private boolean checkUser(String data){
       String[] array;
-      array = data.split("[{]");
+      array = data.split("-M");
       boolean userExists = false;
 
       //System.out.println(data);
       Scanner scanner = new Scanner(System.in);
-      System.out.println("Enter the person's username");
+      System.out.println("Enter the person's name");
       String user = scanner.nextLine();
 
       //System.out.println(array[4]);
       for(int i = 0; i< array.length; i++){
          if (array[i].contains(user)) {
             userExists = true;
+            System.out.println(array[i].substring(array[i].indexOf("date=") + 5, array[i].indexOf("date=") + 15));
          }
       }
       return userExists;
    }
 
-   public void randomMethod(String data){
-      System.out.println("This is the random method" + data);
+   private void printPostage(String data){
+      System.out.println("Here is a summary of postage costs:\t");
       Inventory.printPostageCosts();
    }
 

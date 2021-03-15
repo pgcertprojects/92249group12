@@ -34,7 +34,7 @@ public class FireBaseUtilities implements Runnable {
       });
 
       try {
-         Thread.sleep(10000);
+         Thread.sleep(5000);
          String check = object[0].toString();
          if(check != null){
             System.out.println("Firebase link established");
