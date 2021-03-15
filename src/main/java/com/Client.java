@@ -228,14 +228,24 @@ public class Client extends UserProfile {
       return "04/04/21";
    }//checkAvailableSlot
 
+   //print booking details
    public void generateOutput(String username, String password, String isUser) {
-      //print booking details
+
+      String temp = "";
       System.out.println("checkUser() IS WORKING " + username + " " + password);
-      System.out.println("***************************************************************");
+      System.out.println("*************************************************************** \n");
       System.out.println("DETAILS OF YOUR APPOINTMENT");
       System.out.println("Your appointment is scheduled for: " + isUser.substring(isUser.indexOf("date="), isUser.indexOf(" ")).replace("date=", ""));
-      System.out.println("The estimated cost of work to be carried out is: " + isUser.substring(isUser.indexOf("£"), isUser.indexOf(",")));
-   }//generateOutput
+      String[] arr = isUser.split(" ");
+      for (int i = 0; i < arr.length; i++){
+         if (arr[i].contains("£")){
+            temp = arr[i];
+            temp = temp.substring(temp.indexOf("£"), temp.indexOf(","));
+         }
+      }
+      System.out.println("The estimate cost for work to be carried out is " + temp + "\n");
+      System.out.println("***************************************************************");
+   }
 
    @Override
    public void acceptInput(String data) {
