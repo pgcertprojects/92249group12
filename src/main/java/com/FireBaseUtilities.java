@@ -51,7 +51,7 @@ public class FireBaseUtilities implements Runnable {
                }
             } else {
                Client client = new Client();
-               client.acceptInput(object[0].toString());
+               client.acceptInput(check);
             }
          }
       } catch (InterruptedException e) {
