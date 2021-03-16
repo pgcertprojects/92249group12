@@ -65,7 +65,6 @@ public class Employee {
                     "2.\tPrint out all upcoming bookings\n3.\tCheck a customer's appointment details\n4.\tPrint total postage costs\n\nEnter:\t");
             try
             {
-               System.out.println("Try statement");
                choice = scanner.nextInt();
             }//try
             catch (InputMismatchException error)
