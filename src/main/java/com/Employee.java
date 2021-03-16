@@ -2,6 +2,7 @@ package com;
 
 import java.text.DecimalFormat;
 import java.util.Arrays;
+import java.util.InputMismatchException;
 import java.util.Scanner;
 
 /**
@@ -41,14 +42,15 @@ public class Employee {
                printAllAppointments(data);
                break;
             case 3:
-               System.out.println(checkUser(data));
+               System.out.println("User exists in database: " + checkUser(data) + "\n\n");
                break;
             case 4:
                printPostage(data);
                break;
             default:
-               System.out.println("Please enter a valid selection");
+               System.out.print("Please enter a valid selection\nEnter:");
                choice = scanner.nextInt();
+               System.out.println("");
                break;
          }//switch
          scanner.nextLine();
@@ -58,7 +60,13 @@ public class Employee {
          {
             System.out.print("Which action would you like to perform?\n1.\tGet the total value of current bookings\n" +
                     "2.\tPrint out all upcoming bookings\n3.\tCheck a customer's appointment details\n4.\tPrint total postage costs\n\nEnter:\t");
-            choice = scanner.nextInt();
+            try{
+               choice = scanner.nextInt();
+            }//try
+            catch (InputMismatchException error){
+               System.out.println("A number was not entered, exiting the program.");
+               runMethod = false;
+            }//catch
          }
          else
             runMethod = false;
@@ -147,13 +155,21 @@ public class Employee {
       System.out.println("Enter the person's name");
       String user = scanner.nextLine();
 
+      System.out.println("User's appointment details: ");
       //System.out.println(array[4]);
       for(int i = 0; i< array.length; i++){
          if (array[i].contains(user)) {
             userExists = true;
-            System.out.println(array[i].substring(array[i].indexOf("date=") + 5, array[i].indexOf("date=") + 15));
-         }
-      }
+            String [] subArray;
+            subArray = array[i].split(",");
+            for (int count = 0; count< subArray.length; count++) {
+               if(subArray[count].contains("date="))
+                  System.out.println(subArray[count].substring(subArray[count].indexOf("date=") + 5));
+               if (subArray[count].contains("cost="))
+                  System.out.println(subArray[count].substring(subArray[count].indexOf("cost=") + 5));
+            }//for
+         }//if -  if the array contains the username specified
+      }//for
       return userExists;
    }
 
