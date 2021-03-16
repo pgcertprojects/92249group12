@@ -1,6 +1,8 @@
 package com;
 
 import java.text.DecimalFormat;
+import java.util.Arrays;
+import java.util.Scanner;
 
 /**
  * Created by William - BASIC on 06/03/2021
@@ -58,18 +60,58 @@ public class Employee {
 //         System.out.println(Arrays.toString(doubleNumberArray));
       }
 
-   public boolean checkUser(String data, String user, String password){
-      String[] array;
-      array = data.split("{");
+   public void printAllAppointments(String data){
+      String [] array;
+      array = data.split("-M");
 
-      for(int i = 0; i< array.length; i++){
-         if (array[i].contains(user)) {
-            if (array[i].contains(password)) {
-               return true;
+      String [] dateArray = new String[array.length];
+      String [] nameArray = new String[array.length];
+      System.out.println("Date\t\t\tName");
+
+      //parallel array to print out the dates of current appointments and the name of who has them
+
+      for (int count = 1; count < array.length; count++){
+         if (array[count].contains("date=")){
+            if (array[count].contains("name=")) {
+               //System.out.println(array[count]);
+               dateArray[count] = (array[count].substring(array[count].indexOf("date=") + 5, array[count].indexOf("date=") + 15));
+               nameArray[count] = (array[count].substring(array[count].indexOf("name=") + 5, array[count].indexOf("}")));
+               if (!(dateArray[count].equals(dateArray[count-1])))
+                  System.out.printf("%-15s %-15s %n" , dateArray[count], nameArray[count]);
+               else
+                  System.out.printf("\t\t\t\t" + nameArray[count] + "\n");
             }
          }
+      }//for
+      System.out.println(Arrays.toString(dateArray));
+      System.out.println(Arrays.toString(nameArray));
+      //System.out.println(dateArray.length);
+   }//printAllAppointments
+
+   public boolean checkUser(String data){
+      String[] array;
+      array = data.split("[{]");
+      boolean userExists = false;
+
+      //System.out.println(data);
+      Scanner scanner = new Scanner(System.in);
+      System.out.println("Enter the person's username");
+      String user = scanner.nextLine();
+
+      //System.out.println(array[4]);
+      for(int i = 0; i< array.length; i++){
+         if (array[i].contains(user)) {
+            userExists = true;
+         }
       }
-      return false;
+      return userExists;
    }
+
+   public void randomMethod(String data){
+      System.out.println("This is the random method" + data);
+      Inventory.printPostageCosts();
+   }
+
+
 
 }//class

@@ -35,19 +35,27 @@ public class FireBaseUtilities implements Runnable {
          String check = object[0].toString();
          if(check != null){
             System.out.println("Firebase link established");
-            System.out.println("please press 1 if you are a customer, or 2 if you are an employee \n");
+            System.out.println("Please press 1 if you are a customer, or 2 if you are an employee");
             Scanner scanner = new Scanner(System.in);
             int choice = scanner.nextInt();
             if(choice == 2){
-               System.out.println("please enter the employee code");
+               System.out.println("Please enter the employee code");
                int code = scanner.nextInt();
+               while ((code != 3505) && (code != -1)) {
+                  System.out.println("Incorrect employee code. Try again or press -1 to exit");
+                  code = scanner.nextInt();
+               }
                if (code == 3505){
                   Employee employee = new Employee();
                   employee.getFBData(check);
+                  System.out.println("Printing a list of all the current appointments");
+                  employee.printAllAppointments(check);
                   employee.getValueOfBookings(check);
-               } else {
-                  System.out.println("incorrect employee code");
-                  return;
+                  System.out.println(employee.checkUser(check));
+                  //employee.randomMethod(check);
+               }
+               else {
+                  System.out.println("Leaving program");
                }
             } else {
                Client client = new Client();
