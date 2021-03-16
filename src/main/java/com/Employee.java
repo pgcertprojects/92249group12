@@ -14,7 +14,7 @@ public class Employee {
 
    public String getFBData(String data){
       if (data !=null){
-         System.out.println("Employees class getFBData contains: " + data);
+         //System.out.println("Employees class getFBData contains: " + data);
          return data;
       }//if
       else {
@@ -168,7 +168,8 @@ public class Employee {
       String email = scanner.nextLine();
       email.toLowerCase();
 
-      System.out.println("User's appointment details: ");
+      System.out.println("***************************************");
+      System.out.println("User's appointment details: \n");
       //System.out.println(array[4]);
       for(int i = 0; i< array.length; i++){
          if ((array[i].contains(user)) && (array[i].contains(email))) {
@@ -177,12 +178,20 @@ public class Employee {
             subArray = array[i].split(",");
             for (int count = 0; count< subArray.length; count++) {
                if(subArray[count].contains("date="))
+               {
+                  System.out.print("Your appointment is scheduled for: ");
                   System.out.println(subArray[count].substring(subArray[count].indexOf("date=") + 5));
+               }
                if (subArray[count].contains("cost="))
+               {
+                  System.out.print("The estimate cost for work to be carried out is ");
                   System.out.println(subArray[count].substring(subArray[count].indexOf("cost=") + 5));
+               }
             }//for
          }//if -  if the array contains the username specified
       }//for
+
+      System.out.println("\n***************************************");
       return userExists;
    }//checkUser
 
