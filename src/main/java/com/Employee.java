@@ -1,5 +1,6 @@
 package com;
 
+
 import java.text.DecimalFormat;
 import java.util.Arrays;
 import java.util.InputMismatchException;
@@ -15,15 +16,16 @@ public class Employee {
       if (data !=null){
          System.out.println("Employees class getFBData contains: " + data);
          return data;
-      } else {
+      }//if
+      else {
          return "didn't work";
-      }
-   }
+      }//else
+   }//getFBData
 
    public void chooseMethod(String data){
       boolean runMethod = true;
       int choice;
-      char performAnother;
+      String performAnother;
 
       System.out.print("Which action would you like to perform?\n1.\tGet the total value of current bookings\n" +
               "2.\tPrint out all upcoming bookings\n3.\tCheck a customer's appointment details\n4.\tPrint total postage costs\n\nEnter:\t");
@@ -55,28 +57,37 @@ public class Employee {
          }//switch
          scanner.nextLine();
          System.out.println("Would you like to perform another action? Y/N");
-         performAnother = scanner.nextLine().charAt(0);
-         if ((performAnother == 'y') || (performAnother == 'Y'))
+         performAnother = scanner.nextLine();
+         performAnother.trim().toLowerCase();
+         if (performAnother.contains("y"))
          {
             System.out.print("Which action would you like to perform?\n1.\tGet the total value of current bookings\n" +
                     "2.\tPrint out all upcoming bookings\n3.\tCheck a customer's appointment details\n4.\tPrint total postage costs\n\nEnter:\t");
-            try{
+            try
+            {
+               System.out.println("Try statement");
                choice = scanner.nextInt();
             }//try
-            catch (InputMismatchException error){
+            catch (InputMismatchException error)
+            {
                System.out.println("A number was not entered, exiting the program.");
                runMethod = false;
             }//catch
-         }
+         }//if
          else
+         {
+            System.out.println("Exiting the program.");
             runMethod = false;
+         }//else
       }//do
-      while(runMethod);
+      while (runMethod);
+
+
    }//chooseMethod
 
    private void getValueOfBookings(String data){
       DecimalFormat df = new DecimalFormat("£0.00");
-//      System.out.println("IN THE getValueOfBookings(): " + data);
+//    System.out.println("IN THE getValueOfBookings(): " + data);
       String[] array;
       array = data.split(" ");
       String numbers = "";
@@ -87,23 +98,23 @@ public class Employee {
             String temp = array[i];
             int index = temp.indexOf("£");
             numbers = numbers + temp.substring(index, temp.indexOf(","));
-         }
-      }
+         }//if
+      }//for
       String[] secondNumberArray = numbers.split("£");
       int size = 0;
       double total = 0;
       for (int i=0; i< secondNumberArray.length; i++){
          if(secondNumberArray[i].matches("-?\\d+(\\.\\d+)?")){
             size++;
-         }
-      }
+         }//if
+      }//for
       double[] doubleNumberArray = new double[size];
       for (int i = 0; i < size; i++){
          if(secondNumberArray[i].matches("-?\\d+(\\.\\d+)?")){
             doubleNumberArray[i] = Double.parseDouble(secondNumberArray[i]);
             total += doubleNumberArray[i];
-         }
-      }
+         }//if
+      }//for
       System.out.println();
       System.out.println("************************************");
       System.out.println("SUMMARY OF BOOKINGS");
@@ -113,7 +124,7 @@ public class Employee {
       System.out.println("Total value of bookings: " + df.format(total));
       System.out.println("************************************\n\n");
 //         System.out.println(Arrays.toString(doubleNumberArray));
-      }
+      }//getValueOfBookings
 
    private void printAllAppointments(String data){
       String [] array;
@@ -137,8 +148,8 @@ public class Employee {
                   System.out.printf("%-15s %-15s %n" , dateArray[count], nameArray[count]);
                else
                   System.out.printf("\t\t\t\t" + nameArray[count] + "\n");
-            }
-         }
+            }//if (contains name)
+         }//if (contains date)
       }//for
       //System.out.println(Arrays.toString(dateArray));
       //System.out.println(Arrays.toString(nameArray));
@@ -154,11 +165,14 @@ public class Employee {
       Scanner scanner = new Scanner(System.in);
       System.out.println("Enter the person's name");
       String user = scanner.nextLine();
+      System.out.println("Enter the person's email");
+      String email = scanner.nextLine();
+      email.toLowerCase();
 
       System.out.println("User's appointment details: ");
       //System.out.println(array[4]);
       for(int i = 0; i< array.length; i++){
-         if (array[i].contains(user)) {
+         if ((array[i].contains(user)) && (array[i].contains(email))) {
             userExists = true;
             String [] subArray;
             subArray = array[i].split(",");
@@ -171,12 +185,12 @@ public class Employee {
          }//if -  if the array contains the username specified
       }//for
       return userExists;
-   }
+   }//checkUser
 
    private void printPostage(String data){
       System.out.println("Here is a summary of postage costs:\t");
       Inventory.printPostageCosts();
-   }
+   }//printPostage
 
 
 
