@@ -4,6 +4,7 @@ import java.text.DecimalFormat;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Scanner;
+import java.util.regex.Pattern;
 
 /**
  *Created by William - BASIC on 02/03/2021
@@ -11,7 +12,6 @@ import java.util.Scanner;
  * */
 
 public class Client extends UserProfile {
-   //   private static int nextUniqueID;
    private String date;
    private String carType;
    private String problem;
@@ -31,48 +31,11 @@ public class Client extends UserProfile {
       this.appointmentDate = appointmentDate;
    }//Alternative Constructor
 
-   public String getDate() {
-      return date;
-   }//getDate
-
-   public void setDate(String date) {
-      this.date = date;
-   }//setDate
-
-   public String getCarType() {
-      return carType;
-   }//getCarType
-
-   public void setCarType(String carType) {
-      this.carType = carType;
-   }//setCarType
-
-   public String getProblem() {
-      return problem;
-   }//getProblem
-
-   public void setProblem(String problem) {
-      this.problem = problem;
-   }//setProblem
-
-   public String getCost() {
-      return cost;
-   }//getCost
-
-   public void setCost(String cost) {
-      this.cost = cost;
-   }//setCost
-
-   @Override
-   public void checkCredentials() {
-
-   }//checkCredentials
 
    protected double calculateEstimate(String problem, String car){
       // Receives a problem to search for. Linear searches the first array in a parallel array set, defaults to 150.
       // Then linear searches for the problemType which defaults to repair if not found.
       // Then takes these index positions and returns the cost found in the 2D array.
-
       // Declare and initialise variables
       double cost = 0, carPremium = 1, labourCosts = 0, postageCosts = 0, discount = 0;
       String priority = null, responseDiscount;
@@ -228,14 +191,22 @@ public class Client extends UserProfile {
       return "04/04/21";
    }//checkAvailableSlot
 
+   //print booking details
    public void generateOutput(String username, String password, String isUser) {
-      //print booking details
-      System.out.println("checkUser() IS WORKING " + username + " " + password);
-      System.out.println("***************************************************************");
+      String temp = "";
+      System.out.println("*************************************************************** \n");
       System.out.println("DETAILS OF YOUR APPOINTMENT");
       System.out.println("Your appointment is scheduled for: " + isUser.substring(isUser.indexOf("date="), isUser.indexOf(" ")).replace("date=", ""));
-      System.out.println("The estimated cost of work to be carried out is: " + isUser.substring(isUser.indexOf("£"), isUser.indexOf(",")));
-   }//generateOutput
+      String[] arr = isUser.split(" ");
+      for (int i = 0; i < arr.length; i++){
+         if (arr[i].contains("£")){
+            temp = arr[i];
+            temp = temp.substring(temp.indexOf("£"), temp.indexOf(","));
+         }
+      }
+      System.out.println("The estimate cost for work to be carried out is " + temp + "\n");
+      System.out.println("***************************************************************");
+   }
 
    @Override
    public void acceptInput(String data) {
@@ -260,12 +231,15 @@ public class Client extends UserProfile {
          String userName = scanner.nextLine();
          System.out.println("Please enter your name: \n");
          String name = scanner.nextLine();
+         validateName(name);
          System.out.println("Please enter your password: \n");
          String password = scanner.nextLine();
          System.out.println("Please provide an email address: \n");
          String emailAddress = scanner.nextLine();
+         validateEmail(emailAddress);
          System.out.println("Please enter your phone number: \n");
          String phone = scanner.nextLine();
+         validatePhone(phone);
          DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");
          LocalDateTime now = LocalDateTime.now();
          System.out.println("Please enter the brand of your car: \n");
@@ -282,34 +256,94 @@ public class Client extends UserProfile {
       }//if
    }//if
 
-   @Override
-   public void saveToCSV() {
-   }//saveToCSV
 
    public String checkUser(String data, String user, String password){
       String[] array = data.split("-M");
 
       for(int i = 0; i< array.length; i++){
-         if (array[i].contains(user)) {
-            if (array[i].contains(password)) {
+         if (array[i].contains(user+"=")) {
+            if (array[i].contains("password=" + password + ",")) {
                System.out.println(array[i]);
                return array[i];
             }//if
          }//if
       }//for
+      System.out.println("your username or password is incorrect. Exiting system");
       return null;
    }//checkUser
 
+   public static String validateName(String name){
+      int count =3;
+      Scanner keyboard = new Scanner(System.in);
+      for (int i = 0; i < 3; i++){
+         if (isword(name)){
+            System.out.println("That name is valid, thank you "+name);
+            break;
+         } else if(count !=0){
+            count--;
+            System.out.println("Invalid name, please try again, you have " + count + " chances left to enter a valid name.");
+            name = keyboard.nextLine();
+         } else {
+            return null;
+         }
+      }
+      return name;
+   }
 
-   public String getFBData(String data){
-      if (data !=null){
-         System.out.println("Employees class getFBData contains: " + data);
-         return data;
-      } else {
-         return "didn't work";
-      }//if-else
-   }//getFBData
 
-   //todo check if all the above are necessary
+   //method to take new customer email address and validate input
+   //includes regex to confirm that email is in correct configuration
+   public static String validateEmail (String emailAddress) {
+        int chance = 3;
+        Scanner scanner = new Scanner(System.in);
+        for (int count = 0; count < 3; count++) {
+            String emailRegex = "^[a-zA-Z0-9_+&*-]+(?:\\." + "[a-zA-Z0-9_+&*-]+)*@+(?:[a-zA-Z0-9-]+\\.)+[a-zA-Z]{2,7}$";
+            Pattern pattern = Pattern.compile(emailRegex);
+            if (pattern.matcher(emailAddress).matches()) {
+            System.out.println("That is a valid email address, "+emailAddress+" thank you");
+            break;
+            } else if(chance !=0) {
+               chance--;
+               System.out.println("Invalid email address, please try again, you have " + chance + " more chance(s) to enter a valid name.");
+            } else {
+                  System.out.println("Sorry you had 3 attempts, system shutdown");
+                  return null;
+            }
+        }
+        return emailAddress;
+   }
+
+   //regex to check that only letters are entered
+   public static boolean isword(String in) {
+      return Pattern.matches("([A-Z]{1})([a-z]+)(\\s)([A-Z]{1})([a-z]+){1}", in);
+   }
+
+
+        //method to take in new customer phone number
+   //includes regex to validate that input is only digits
+   public static String validatePhone (String phone) {
+        int chance=3;
+        Scanner scanner = new Scanner(System.in);
+        for (int count=0;count<3; count++) {
+            if(phoneno(phone)){
+               System.out.println("That is a valid phone number, "+phone+" thank you\n");
+               return phone;
+            } else {
+               chance--;
+               System.out.println("Invalid telephone number, please try again, you have " + chance + " more chance(s) to enter a valid number");
+               if (chance == 0) {
+               System.out.println("Sorry you had 3 attempts, system shutdown");
+               return null;
+               }
+            }
+        }
+        return phone;
+   }
+
+   public static boolean phoneno(String num){
+        return Pattern.matches("[0-9]+", num);
+   }
+
 
 }//class
+
