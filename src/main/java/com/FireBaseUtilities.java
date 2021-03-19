@@ -2,14 +2,35 @@ package com;
 
 
 import com.google.firebase.database.*;
-import org.apache.commons.lang3.ObjectUtils;
 
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Scanner;
 
+/****
+ *
+ * Created and maintained by William Stewart - B00830662
+ *
+ * This section of the code primarily handles Firebase interaction.
+ * Also handles some utility functions necessary for the project.
+ *
+ */
 
 public class FireBaseUtilities implements Runnable {
+
+   /**
+    *
+    * This method is used to read in data from Firebase.
+    * Firebase holds the data in an easily exportable json format.
+    * The json from Friebase is read in as a json object.
+    * The object array for distribution
+    * to other parts of the project that
+    * need to read in the json file stored in Firebase.
+    *
+    * The method requires the use of it's own thread (multi threading)
+    * to communicate with an external database (Firebase) asynchronously.
+    *
+    */
    public void run() {
       final Object[] object = new Object[1];
       FireBaseService fbs = null;
@@ -22,12 +43,28 @@ public class FireBaseUtilities implements Runnable {
       DatabaseReference ref = fbs.getDb()
               .getReference("/");
 
+      /**
+       * Anonymous method to check for any changes in Firebase
+       */
       ref.addValueEventListener(new ValueEventListener() {
+
+         /**
+          * @param dataSnapshot
+          * Take a snapshot of the current state of the database
+          * assign this snapshot to an object then pass this
+          * to the Object array called 'object'
+          */
          public void onDataChange(DataSnapshot dataSnapshot) {
             Object document = dataSnapshot.getValue();
 //            System.out.println(document);
             object[0] = document;
          }
+
+         /**
+          * @param error
+          * if there is an error when taking a snapshot,
+          * then send an error message
+          */
          public void onCancelled(DatabaseError error) {
             System.out.print("Error: " + error.getMessage());
          }
@@ -66,6 +103,24 @@ public class FireBaseUtilities implements Runnable {
       }
    }
 
+   /***
+    *
+    * @param name
+    * @param password
+    * @param emailAddress
+    * @param phone
+    * @param date
+    * @param car
+    * @param problem
+    * @param cost
+    * @param userName
+    *
+    * sendChanges reads in all the data that we want to send to Firebase
+    * The data is placed in a Hashmap array to create the json object
+    * required by Firebase.
+    * When the hashmap is created, a destination path is then set.
+    * The HashMap object is then sent to this destination.
+    */
    public void sendChanges(String name, String password, String emailAddress, String phone, String date, String car, String problem, String cost, String userName){
       HashMap<String, Client> detailsOfBooking = new HashMap<String, Client>();
       detailsOfBooking.put(userName, new Client(name, password, emailAddress, phone, date, car, problem, cost));
