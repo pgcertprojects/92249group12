@@ -31,6 +31,38 @@ public class Client extends UserProfile {
       this.appointmentDate = appointmentDate;
    }//Alternative Constructor
 
+   public String getDate() {
+      return date;
+   }
+
+   public void setDate(String date) {
+      this.date = date;
+   }
+
+   public String getCarType() {
+      return carType;
+   }
+
+   public void setCarType(String carType) {
+      this.carType = carType;
+   }
+
+   public String getProblem() {
+      return problem;
+   }
+
+   public void setProblem(String problem) {
+      this.problem = problem;
+   }
+
+   public String getCost() {
+      return cost;
+   }
+
+   public void setCost(String cost) {
+      this.cost = cost;
+   }
+
 
    protected double calculateEstimate(String problem, String car){
       // Receives a problem to search for. Linear searches the first array in a parallel array set, defaults to 150.
