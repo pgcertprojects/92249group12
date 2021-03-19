@@ -215,13 +215,6 @@ public class Client extends UserProfile {
       return cost;
    }//calculateEstimate
 
-   @Override
-   public String checkAvailableSlot() {
-      //todo pull dates already booked.
-      //todo once dates pulled in, add one day to get the next available slot, set a limit of the number appointments that can be booked into one day. e.g. 5 appointments a day.
-      return "04/04/21";
-   }//checkAvailableSlot
-
    //print booking details
    public void generateOutput(String username, String password, String isUser) {
       String temp = "";
@@ -282,12 +275,11 @@ public class Client extends UserProfile {
          System.out.println("\t(Only 1 type of job of no more than 5 problems/jobs per appointment please.\nResponse: \n");
          String problem = scanner.nextLine();
          double finalCost = client.calculateEstimate(problem, car);
-         String appointmentDate = client.checkAvailableSlot();
-         System.out.println("Your appointment has been scheduled for: " + appointmentDate + "\n" + "The estimated cost will be: " + "£" + df.format(finalCost) + "\n");
+//         String appointmentDate = client.checkAvailableSlot();
          FireBaseUtilities clientDetails = new FireBaseUtilities();
          String theAppointmentDate = clientDetails.bookingDate(forTheBookingDateMethod);
-         System.out.println("booking date contains this: " + theAppointmentDate);
-         clientDetails.sendChanges(name, password, emailAddress, phone, dtf.format(now), car, problem, "£" + df.format(finalCost), userName);
+         System.out.println("Your appointment has been scheduled for: " + theAppointmentDate + "\n" + "The estimated cost will be: " + "£" + df.format(finalCost) + "\n");
+         clientDetails.sendChanges(name, password, emailAddress, phone, theAppointmentDate + " 09:00:00", car, problem, "£" + df.format(finalCost), userName);
       }//if
    }//if
 

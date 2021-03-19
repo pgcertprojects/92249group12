@@ -1,5 +1,7 @@
 package com;
 
+import com.google.firebase.database.FirebaseDatabase;
+
 import java.text.DecimalFormat;
 import java.util.InputMismatchException;
 import java.util.Scanner;
@@ -214,6 +216,7 @@ public class Inventory {
       //Method which checks whether job type requires postage.
 
       //Declaring and initialising variables
+      FireBaseUtilities isPost = new FireBaseUtilities();
       boolean found = false;
       String [] problemType = {"inspect", "fit", "repair", "replace", "fix"};
       int jobType = 0;
@@ -235,6 +238,7 @@ public class Inventory {
 
       //Performing check to see if job requires postage.
       if (jobType > 1) {
+         isPost.lookIntoThePostage(true);
          return true;
       } else {
          return false;

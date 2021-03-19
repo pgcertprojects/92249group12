@@ -54,7 +54,6 @@ abstract public class UserProfile {
    public UserProfile() {
    }
 
-   public abstract String checkAvailableSlot();
 
    public abstract void acceptInput(String data) throws ParseException;
 
