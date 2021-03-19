@@ -176,6 +176,10 @@ public class Inventory {
    }//getIndexedBrand
 
    //Get methods which are called exclusively in this class.
+   private static String getCarPart(int partNameIndex) {
+      return carParts[partNameIndex];
+   }//getCarPart
+
    private static String getIndexedPostageSize(int index) {
       return postageSize[index];
    }//getIndexedPostageSize
@@ -187,6 +191,10 @@ public class Inventory {
    private static String getIndexedPostagePriority(int index) {
       return postagePriority[index];
    }//getIndexedSupplier
+
+   private static double getSupplierPostage(int maxSize, int postagePriority, int supplier) {
+      return supplierPostage[maxSize][postagePriority][supplier];
+   }//getSupplierPostage
 
    //Print methods
    protected static void printPostageCosts() {
@@ -427,7 +435,7 @@ public class Inventory {
       // Objects declared in this class are not intended to persist beyond run-time and are not intended to be stored in the firebase database.
 
       //Declare method variables
-      double partsCost = 0, finalPartsCost = 0, markup = 0, cost = 0;
+      double workingPostageCost = 0, finalPostageCost = 0, markupCost = 0, tempCost = 0;
       String carNationality;
       final int MAX = 5; //Setting number of objects to be created and size of parts arrays.
       int [] partsRequired = new int [MAX];
@@ -455,36 +463,36 @@ public class Inventory {
          maxSize = generateMaxSize(partsRequired);
          carNationality = generateCarNationality(car);
          supplier = generateSupplier(carNationality);
-         partsCost = supplierPostage[maxSize][postagePriority][supplier];
+         workingPostageCost = getSupplierPostage(maxSize, postagePriority, supplier);
 
-         markup = generateMarkup(partsCost);
-         cost = markup + partsCost;
+         markupCost = generateMarkup(workingPostageCost);
+         tempCost = markupCost + workingPostageCost;
 
          //Outputting calculations and detected postage requirements using a mixture of data from that stored in arrays and in objects
          System.out.println("\tCar Parts Origin:\t\t" + capitalise(carNationality));
-         System.out.println("\tPostage Priority:\t\t" + getIndexedPostagePriority(postagePriority));
+         System.out.println("\tPostage Priority:\t\t" + capitalise(getIndexedPostagePriority(postagePriority)));
          System.out.println("\tParts List:");
          for (int index = 0; index < MAX; index++) {
-            System.out.println("\t\t" + (index + 1) + ")\t" + capitalise(carParts[tempParts[index].getPartNameIndex()]) + "\t\t" + capitalise(postageSize[tempParts[index].getPartSizeIndex()]));
+            System.out.println("\t\t" + (index + 1) + ")\t" + capitalise(getCarPart(tempParts[index].getPartNameIndex())) + "\t\t" + capitalise(postageSize[tempParts[index].getPartSizeIndex()]));
          }//for
          System.out.println("\tLargest part size:\t\t" + capitalise(getIndexedPostageSize(maxSize)));
          System.out.println("\tSupplier:\t\t\t\t" + getIndexedSupplier(supplier));
-         System.out.println("\tPostage Cost:\t\t\t£" + currency.format(partsCost));
+         System.out.println("\tPostage Cost:\t\t\t£" + currency.format(workingPostageCost));
          System.out.println("\tMechanic admin markup:\t" + percent.format((MARKUP - 1) * 100) + "%");
-         System.out.println("\tMechanic admin charge:\t£" + currency.format(markup));
+         System.out.println("\tMechanic admin charge:\t£" + currency.format(markupCost));
 
-         //Swapping the values of cost and finalPartsCost without using a third variable
-         finalPartsCost = finalPartsCost + cost;   //x = x + y
-         cost = finalPartsCost - cost;             //y = x - y
-         finalPartsCost = finalPartsCost - cost;   //x = x - y
+         //Swapping the values of finalPostageCost and tempCost without using a third variable
+         finalPostageCost = finalPostageCost + tempCost;   //x = x + y
+         tempCost = finalPostageCost - tempCost;             //y = x - y
+         finalPostageCost = finalPostageCost - tempCost;   //x = x - y
 
          //Outputting final postage calculation
-         System.out.println("\nTotal postage cost:\t£" + currency.format(finalPartsCost));
+         System.out.println("\nTotal postage cost:\t£" + currency.format(finalPostageCost));
 
          //Final return statement
-         return finalPartsCost;
+         return finalPostageCost;
       } else {
-         return finalPartsCost = 0;
+         return finalPostageCost = 0;
       }//if-else
    }//calculatePostageCost
 }//class

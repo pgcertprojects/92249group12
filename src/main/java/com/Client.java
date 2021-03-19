@@ -37,7 +37,8 @@ public class Client extends UserProfile {
       // Then linear searches for the problemType which defaults to repair if not found.
       // Then takes these index positions and returns the cost found in the 2D array.
       // Declare and initialise variables
-      double cost = 0, carPremium = 1, labourCosts = 0, postageCosts = 0, discount = 0;
+      final double VAT = 0.2;
+      double cost = 0, carPremium = 1, labourCosts = 0, postageCosts = 0, discount = 0, taxedLabourCosts = 0;
       String priority = null, responseDiscount;
       boolean found = false;
       String [] problemList = { "air con", "air filter", "alloys", "alternator", "belts", "bodywork", "brake discs", "brake fluid", "brake pads", "brakes", //0-9
@@ -134,6 +135,7 @@ public class Client extends UserProfile {
       //Calculating car premium and using this to modify labour costs.
       carPremium = Helper.addCarTypePremium(car);
       labourCosts = cost * carPremium;
+      taxedLabourCosts = labourCosts + (labourCosts * VAT);
 
       //Prompting user for response and accepting their input
       System.out.println("\nHow fast do you require the work to be done? ");
@@ -154,7 +156,9 @@ public class Client extends UserProfile {
       System.out.println("\tDetected Job Type:\t" + problemType[jobType]);
       System.out.println("\tLabour costs:\t\t£" + Inventory.currency.format(cost));
       System.out.println("\tCar type modifier:\t" + (carPremium * 100) + "%");
-      System.out.println("\nTotal Labour Costs:\t£" + labourCosts);
+      System.out.println("\tVAT @ " + Inventory.percent.format(VAT) + "%:\t£" + (Inventory.currency.format(taxedLabourCosts)));
+      System.out.println("\nTotal Labour Costs:\t£" + taxedLabourCosts);
+
 
       //Calculating parts postage cost if required.
       System.out.println("\n***Parts Postage Costs***");
@@ -163,7 +167,7 @@ public class Client extends UserProfile {
          System.out.println("\tNo postage costs / postage for small consumables included in labour costs");
       }//if
       //Calculating, storing and outputting total
-      cost = labourCosts + postageCosts;
+      cost = taxedLabourCosts + postageCosts;
 
       //Asking user for discount code
       System.out.println("Do you have a discount code (please enter y or n): ");
