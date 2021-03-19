@@ -3,8 +3,9 @@ package com;
 import java.text.ParseException;
 
 /**
- * Created by William - BASIC on 18/02/2021
- * UPDATE PROGRAM COMMENTS ABOUR PROGRAM HERE
+ *
+ * Created and maintained by William
+ *
  */
 abstract public class UserProfile {
    private String name;

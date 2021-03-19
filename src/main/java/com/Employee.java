@@ -7,8 +7,8 @@ import java.util.InputMismatchException;
 import java.util.Scanner;
 
 /**
- * Created by William - BASIC on 06/03/2021
- * UPDATE PROGRAM COMMENTS ABOUR PROGRAM HERE
+ * Created by Peter Spiers
+ *
  */
 public class Employee {
 

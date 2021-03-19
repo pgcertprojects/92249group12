@@ -1,5 +1,11 @@
 package com;
 
+/**
+ *
+ * Created and maintained by Chris Swain
+ *
+ */
+
 public class Helper {
 
    protected static int searchPostagePhrases(String priority, String [] dictionary, int affinity) {
