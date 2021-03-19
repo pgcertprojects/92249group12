@@ -220,9 +220,9 @@ public class Client extends UserProfile {
       System.out.println("Are you an existing customer? (Y/N)");
       String newCustomerCheck = scanner.nextLine().toLowerCase().trim();
       if (newCustomerCheck.equals("y")){
-         System.out.println("please enter your username: ");
+         System.out.println("Please enter your username: ");
          String username = scanner.nextLine();
-         System.out.println("please enter your password");
+         System.out.println("Please enter your password");
          String password = scanner.nextLine();
          String isUser = client.checkUser(data, username, password);
          if (isUser != null){
@@ -231,12 +231,12 @@ public class Client extends UserProfile {
          }//if
       }//if
       if(newCustomerCheck.equals("n")){
-         System.out.println("Please enter a new user name of your choice: ");
+         System.out.println("Please enter a user name of your choice: \n");
          String userName = scanner.nextLine();
          System.out.println("Please enter your name: \n");
          String name = scanner.nextLine();
          validateName(name);
-         System.out.println("Please enter your password: \n");
+         System.out.println("Please enter a new password: \n");
          String password = scanner.nextLine();
          System.out.println("Please provide an email address: \n");
          String emailAddress = scanner.nextLine();
@@ -249,8 +249,8 @@ public class Client extends UserProfile {
          System.out.println("Please enter the brand of your car: \n");
          String car = scanner.nextLine();
          System.out.println("Please describe what you need done to your car ");
-         System.out.println("\t(Pleas describe the type of problem using either \"inspect\", \"repair\" or \"replace\" keywords");
-         System.out.println("\t(Only 1 type of job of no more than 5 problems/jobs per appointment please.\nResponse: \n");
+         System.out.println("\t(Pleas describe the type of problem using either \"inspect\", \"repair\" or \"replace\" keywords)");
+         System.out.println("\t(Only 1 type of job of no more than 5 problems/jobs per appointment please.)\nResponse: \n");
          String problem = scanner.nextLine();
          double finalCost = client.calculateEstimate(problem, car);
          String appointmentDate = client.checkAvailableSlot();
@@ -272,7 +272,7 @@ public class Client extends UserProfile {
             }//if
          }//if
       }//for
-      System.out.println("your username or password is incorrect. Exiting system");
+      System.out.println("Your username or password is incorrect. Exiting system");
       return null;
    }//checkUser
 
