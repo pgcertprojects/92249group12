@@ -16,19 +16,18 @@ public class Client extends UserProfile {
    private String carType;
    private String problem;
    private String cost;
-   private String appointmentDate;
 
 
    public Client() {
    }//Default Constructor
 
-   public Client(String name, String password, String emailAddress, String phoneNumber, String date, String carType, String problem, String cost, String appointmentDate) {
+   public Client(String name, String password, String emailAddress, String phoneNumber, String date, String carType, String problem, String cost) {
       super(name, password, emailAddress, phoneNumber);
       this.date = date;
       this.carType = carType;
       this.problem = problem;
       this.cost = cost;
-      this.appointmentDate = appointmentDate;
+//      this.appointmentDate = appointmentDate;
    }//Alternative Constructor
 
    public String getDate() {
@@ -284,7 +283,7 @@ public class Client extends UserProfile {
          String appointmentDate = client.checkAvailableSlot();
          System.out.println("Your appointment has been scheduled for: " + appointmentDate + "\n" + "The estimated cost will be: " + "£" + df.format(finalCost) + "\n");
          FireBaseUtilities clientDetails = new FireBaseUtilities();
-         clientDetails.sendChanges(name, password, emailAddress, phone, dtf.format(now), car, problem, "£" + df.format(finalCost), appointmentDate, userName);
+         clientDetails.sendChanges(name, password, emailAddress, phone, dtf.format(now), car, problem, "£" + df.format(finalCost), userName);
       }//if
    }//if
 

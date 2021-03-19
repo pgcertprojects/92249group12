@@ -66,9 +66,9 @@ public class FireBaseUtilities implements Runnable {
       }
    }
 
-   public void sendChanges(String name, String password, String emailAddress, String phone, String date, String car, String problem, String cost, String appointmentDate, String userName){
+   public void sendChanges(String name, String password, String emailAddress, String phone, String date, String car, String problem, String cost, String userName){
       HashMap<String, Client> detailsOfBooking = new HashMap<String, Client>();
-      detailsOfBooking.put(userName, new Client(name, password, emailAddress, phone, date, car, problem, cost, appointmentDate));
+      detailsOfBooking.put(userName, new Client(name, password, emailAddress, phone, date, car, problem, cost));
       FirebaseDatabase database = FirebaseDatabase.getInstance();
       DatabaseReference refWrite = database.getReference("Newrec");
       DatabaseReference usersRef = refWrite.child("abc");
