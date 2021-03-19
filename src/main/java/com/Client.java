@@ -27,7 +27,6 @@ public class Client extends UserProfile {
       this.carType = carType;
       this.problem = problem;
       this.cost = cost;
-//      this.appointmentDate = appointmentDate;
    }//Alternative Constructor
 
    public String getDate() {
