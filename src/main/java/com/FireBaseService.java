@@ -9,7 +9,22 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 
-
+/***
+ *
+ * Created by William Stewart
+ *
+ * Primary purpose of this class is to point
+ * Firebase utilities at the correct endpoint
+ * for our persistent object (json) database.
+ *
+ * Also, validates credentials for access to
+ * Firebase
+ *
+ * PLEASE CONTACT: William Stewart
+ * for decommissioning of this link.
+ *
+ *
+ */
 public class FireBaseService {
    FirebaseDatabase db;
 

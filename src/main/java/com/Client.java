@@ -8,8 +8,9 @@ import java.util.Scanner;
 import java.util.regex.Pattern;
 
 /**
- *Created by William - BASIC on 02/03/2021
- *UPDATE PROGRAM COMMENTS ABOUR PROGRAM HERE
+ *
+ *Created by Darrell Shields
+ *
  * */
 
 public class Client extends UserProfile {
