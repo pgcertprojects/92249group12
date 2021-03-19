@@ -13,6 +13,14 @@ import java.io.IOException;
 public class FireBaseService {
    FirebaseDatabase db;
 
+   /**
+    * @throws IOException
+    *
+    * read in the json key file for database authentication
+    *
+    * provide target url and initialise when FireBaseService() is called
+    *
+    */
    public FireBaseService() throws IOException {
       File file = new File(
 //              getClass().getClassLoader().getResource("key.json").getFile()
