@@ -24,6 +24,8 @@ import java.util.Scanner;
 
 public class FireBaseUtilities implements Runnable {
 
+   public static boolean isconfirmed = false;
+
    /**
     *
     * This method is used to read in data from Firebase.
@@ -65,6 +67,8 @@ public class FireBaseUtilities implements Runnable {
           */
          public void onDataChange(DataSnapshot dataSnapshot) {
             Object document = dataSnapshot.getValue();
+
+            //FOR DEBUGGING: uncomment the following line if you need to see the json being read in from Firebase
 //            System.out.println(document);
             object[0] = document;
          }
@@ -184,16 +188,28 @@ public class FireBaseUtilities implements Runnable {
                bookingDate = sdf.format(c.getTime());  // dt is now the new date
                break;
             }
+         } else if(isconfirmed) {
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd");
+            Calendar c = Calendar.getInstance();
+            c.setTime(sdf.parse(bookingDate));
+            c.add(Calendar.DATE, 14);  // number of days to add
+            bookingDate = sdf.format(c.getTime());  // dt is now the new date
+            break;
          } else {
             SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd");
             Calendar c = Calendar.getInstance();
             c.setTime(sdf.parse(bookingDate));
             c.add(Calendar.DATE, 1);  // number of days to add
             bookingDate = sdf.format(c.getTime());  // dt is now the new date
-            break;
          }
       }
       return bookingDate;
+   }
+
+   public void lookIntoThePostage(boolean check){
+      if (check = true){
+         isconfirmed = true;
+      }
    }
 
 
