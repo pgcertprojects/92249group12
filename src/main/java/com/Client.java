@@ -1,6 +1,7 @@
 package com;
 
 import java.text.DecimalFormat;
+import java.text.ParseException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Scanner;
@@ -239,7 +240,9 @@ public class Client extends UserProfile {
    }
 
    @Override
-   public void acceptInput(String data) {
+   public void acceptInput(String data) throws ParseException
+   {
+      String forTheBookingDateMethod = data;
       Scanner scanner = new Scanner(System.in);
       Client client = new Client();
       DecimalFormat df = new DecimalFormat("00.00");
@@ -282,6 +285,8 @@ public class Client extends UserProfile {
          String appointmentDate = client.checkAvailableSlot();
          System.out.println("Your appointment has been scheduled for: " + appointmentDate + "\n" + "The estimated cost will be: " + "£" + df.format(finalCost) + "\n");
          FireBaseUtilities clientDetails = new FireBaseUtilities();
+         String theAppointmentDate = clientDetails.bookingDate(forTheBookingDateMethod);
+         System.out.println("booking date contains this: " + theAppointmentDate);
          clientDetails.sendChanges(name, password, emailAddress, phone, dtf.format(now), car, problem, "£" + df.format(finalCost), userName);
       }//if
    }//if

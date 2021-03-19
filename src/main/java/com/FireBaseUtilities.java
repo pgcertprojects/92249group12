@@ -4,6 +4,12 @@ package com;
 import com.google.firebase.database.*;
 
 import java.io.IOException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.Arrays;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Scanner;
 
@@ -22,7 +28,7 @@ public class FireBaseUtilities implements Runnable {
     *
     * This method is used to read in data from Firebase.
     * Firebase holds the data in an easily exportable json format.
-    * The json from Friebase is read in as a json object.
+    * The json from Firebase is read in as a json object.
     * The object array for distribution
     * to other parts of the project that
     * need to read in the json file stored in Firebase.
@@ -44,7 +50,10 @@ public class FireBaseUtilities implements Runnable {
               .getReference("/");
 
       /**
-       * Anonymous method to check for any changes in Firebase
+       * Anonymous method to check for any changes in Firebase,
+       * containing further methods. See descriptions of
+       * methods contained within for durther details on
+       * functionality
        */
       ref.addValueEventListener(new ValueEventListener() {
 
@@ -98,7 +107,7 @@ public class FireBaseUtilities implements Runnable {
                client.acceptInput(check);
             }
          }
-      } catch (InterruptedException e) {
+      } catch (InterruptedException | ParseException e) {
          e.printStackTrace();
       }
    }
@@ -129,5 +138,63 @@ public class FireBaseUtilities implements Runnable {
       DatabaseReference usersRef = refWrite.child("abc");
       usersRef.push().setValueAsync(detailsOfBooking);
    }
+
+
+   public String bookingDate(String data) throws ParseException, ParseException {
+      String [] array;
+      array = data.split("-M");
+      String [] dateArray = new String[array.length];
+      String [] tempArray = new String[array.length];
+      int [] intArray = new int[array.length];
+      DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd");
+      LocalDateTime now = LocalDateTime.now();
+      String bookingDate = dtf.format(now);
+
+      for (int i = 1; i < array.length; i++){
+         dateArray[i] = (array[i].substring(array[i].indexOf("date=") + 5, array[i].indexOf("date=") + 15));
+         tempArray[i] = dateArray[i].replace("/", "");
+      }
+
+      for(int i = 0; i<tempArray.length; i++) {
+         try {
+            intArray[i] = Integer.parseInt(tempArray[i]);
+         }
+         catch (NumberFormatException nfe){
+
+         }
+      }
+
+      for (int i = 0; i < intArray.length; i++) {
+         for (int k = i + 1; k < intArray.length; k++){
+            if (intArray[i] < intArray[k]){
+               bookingDate = dateArray[k];
+            }
+         }
+      }
+
+      for(int i = 0; i < dateArray.length; i++){
+         int count = 0;
+         if(Arrays.asList(dateArray[i]).contains(bookingDate)){
+            count ++;
+            if (count > 4){
+               SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd");
+               Calendar c = Calendar.getInstance();
+               c.setTime(sdf.parse(bookingDate));
+               c.add(Calendar.DATE, 1);  // number of days to add
+               bookingDate = sdf.format(c.getTime());  // dt is now the new date
+               break;
+            }
+         } else {
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd");
+            Calendar c = Calendar.getInstance();
+            c.setTime(sdf.parse(bookingDate));
+            c.add(Calendar.DATE, 1);  // number of days to add
+            bookingDate = sdf.format(c.getTime());  // dt is now the new date
+            break;
+         }
+      }
+      return bookingDate;
+   }
+
 
 }

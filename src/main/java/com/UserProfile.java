@@ -1,5 +1,7 @@
 package com;
 
+import java.text.ParseException;
+
 /**
  * Created by William - BASIC on 18/02/2021
  * UPDATE PROGRAM COMMENTS ABOUR PROGRAM HERE
@@ -54,6 +56,6 @@ abstract public class UserProfile {
 
    public abstract String checkAvailableSlot();
 
-   public abstract void acceptInput(String data);
+   public abstract void acceptInput(String data) throws ParseException;
 
 }//class
