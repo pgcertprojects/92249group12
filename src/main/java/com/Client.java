@@ -238,8 +238,7 @@ public class Client extends UserProfile {
    }
 
    @Override
-   public void acceptInput(String data) throws ParseException
-   {
+   public void acceptInput(String data) throws ParseException {
       String forTheBookingDateMethod = data;
       Scanner scanner = new Scanner(System.in);
       Client client = new Client();

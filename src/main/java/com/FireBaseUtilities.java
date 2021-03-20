@@ -213,7 +213,8 @@ public class FireBaseUtilities implements Runnable {
       //check if a booking date contains more than 5 appointments.
       //If more than 5, set bookingDate to the next day.
       //Else if postage is incurred add two weeks (to ensure appointment is
-      //after parts arrive. Else if none of the other conditions are met then
+      //after parts arrive) 15 days if the slot plus two weeks is already full
+      //Else if none of the other conditions are met then
       //give client an appointment tomorrow.
       for(int i = 0; i < dateArray.length; i++){
          int count = 0;
@@ -228,12 +229,21 @@ public class FireBaseUtilities implements Runnable {
                break;
             }
          } else if(isConfirmed) {
-            SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd");
-            Calendar c = Calendar.getInstance();
-            c.setTime(sdf.parse(bookingDate));
-            c.add(Calendar.DATE, 14);  // number of days to add
-            bookingDate = sdf.format(c.getTime());  // set the new date plus 14 days for part to arrive
-            break;
+            if (count > 4){
+               SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd");
+               Calendar c = Calendar.getInstance();
+               c.setTime(sdf.parse(bookingDate));
+               c.add(Calendar.DATE, 14);  // number of days to add
+               bookingDate = sdf.format(c.getTime());  // set the new date plus 14 days for part to arrive
+               break;
+            } else {
+               SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd");
+               Calendar c = Calendar.getInstance();
+               c.setTime(sdf.parse(bookingDate));
+               c.add(Calendar.DATE, 15);  // number of days to add
+               bookingDate = sdf.format(c.getTime());  // set the new date plus 14 days for part to arrive
+               break;
+            }
          } else {
             SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd");
             Calendar c = Calendar.getInstance();
