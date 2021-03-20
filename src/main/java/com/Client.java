@@ -278,7 +278,7 @@ public class Client extends UserProfile {
          double finalCost = client.calculateEstimate(problem, car);
          FireBaseUtilities clientDetails = new FireBaseUtilities();
          String theAppointmentDate = clientDetails.bookingDate(forTheBookingDateMethod);
-         System.out.println("Your appointment has been scheduled for: " + theAppointmentDate + "(year/month/day)" + "\n" + "The estimated cost will be: " + "£" + df.format(finalCost) + "\n");
+         System.out.println("Your appointment has been scheduled for: " + theAppointmentDate + " (year/month/day)" + "\n" + "The estimated cost will be: " + "£" + df.format(finalCost) + "\n");
          clientDetails.sendChanges(name, password, emailAddress, phone, theAppointmentDate + " 09:00:00", car, problem, "£" + df.format(finalCost), userName);
       }//if
    }//if
