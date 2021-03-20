@@ -276,10 +276,9 @@ public class Client extends UserProfile {
          System.out.println("\t(Only 1 type of job of no more than 5 problems/jobs per appointment please.\nResponse: \n");
          String problem = scanner.nextLine();
          double finalCost = client.calculateEstimate(problem, car);
-//         String appointmentDate = client.checkAvailableSlot();
          FireBaseUtilities clientDetails = new FireBaseUtilities();
          String theAppointmentDate = clientDetails.bookingDate(forTheBookingDateMethod);
-         System.out.println("Your appointment has been scheduled for: " + theAppointmentDate + "\n" + "The estimated cost will be: " + "£" + df.format(finalCost) + "\n");
+         System.out.println("Your appointment has been scheduled for: " + theAppointmentDate + "(year/month/day)" + "\n" + "The estimated cost will be: " + "£" + df.format(finalCost) + "\n");
          clientDetails.sendChanges(name, password, emailAddress, phone, theAppointmentDate + " 09:00:00", car, problem, "£" + df.format(finalCost), userName);
       }//if
    }//if
