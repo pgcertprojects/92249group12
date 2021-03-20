@@ -32,13 +32,15 @@ public class FireBaseUtilities implements Runnable {
     *
     * This method is used to read in data from Firebase.
     * Firebase holds the data in an easily exportable json format.
-    * The json from Firebase is read in as a json object.
-    * The object array is used for ease of distribution
+    * The json file from Firebase is read in as a json object.
+    * The object is then put into an array ease of distribution
     * to other parts of the project that
     * need to read in the json file stored in Firebase.
     *
     * The method requires the use of it's own thread (multi threading)
-    * to communicate with an external database (Firebase) asynchronously.
+    * to communicate with an external database (Firebase) asynchronously,
+    * ensuring that calls to Firebase do not block the rest of the
+    * program from running.
     *
     */
    public void run() {
@@ -82,7 +84,7 @@ public class FireBaseUtilities implements Runnable {
          /**
           * @param error
           * if there is an error when taking a snapshot,
-          * then send an error message, else confirm link.
+          * then send an error message.
           *
           * Calls to the Client and Employee class here for
           * thread consistency (to ensure they communicate on the same thread).
@@ -97,9 +99,9 @@ public class FireBaseUtilities implements Runnable {
          String check = object[0].toString();
          if(check != null){
             System.out.println("****************************************************");
-            System.out.println("Firebase link established. \nPROJECT CONTRIBUTORS: \t Darrell Shield \n \t\t\t\t\t\t Chris Swain \n \t\t\t\t\t\t Peter Spiers \n\t\t\t\t\t\t William Stewart \n");
+            System.out.println("Firebase link established. \nPROJECT CONTRIBUTORS: \t Darrell Shields \n \t\t\t\t\t\t Christopher Swain \n \t\t\t\t\t\t Peter Spiers \n\t\t\t\t\t\t William Stewart \n");
             System.out.println("****************************************************");
-            System.out.println("Please press 1 if you are a customer, or 2 if you are an employee (IF YOU DO NOT THE PROGRAM WILL NOT PROCEED)");
+            System.out.println("Please press 1 if you are a customer, or 2 if you are an employee (IF YOU DO NOT, THE PROGRAM WILL NOT PROCEED)");
             Scanner scanner = new Scanner(System.in);
             int choice =0;
             try {
@@ -182,8 +184,8 @@ public class FireBaseUtilities implements Runnable {
       LocalDateTime now = LocalDateTime.now();
       String bookingDate = dtf.format(now);
 
-      //iterate through the date array, identify the date, add to tempArray
-      //and remove the forward slashes from the dates.
+      //iterate through the date array, identify the date,
+      //remove the forward slashes from the dates, add to tempArray.
       for (int i = 1; i < array.length; i++){
          dateArray[i] = (array[i].substring(array[i].indexOf("date=") + 5, array[i].indexOf("date=") + 15));
          tempArray[i] = dateArray[i].replace("/", "");
@@ -222,7 +224,7 @@ public class FireBaseUtilities implements Runnable {
                Calendar c = Calendar.getInstance();
                c.setTime(sdf.parse(bookingDate));
                c.add(Calendar.DATE, 1);  // number of days to add
-               bookingDate = sdf.format(c.getTime());  // now the new date
+               bookingDate = sdf.format(c.getTime());  // set date to following day
                break;
             }
          } else if(isConfirmed) {
@@ -230,14 +232,14 @@ public class FireBaseUtilities implements Runnable {
             Calendar c = Calendar.getInstance();
             c.setTime(sdf.parse(bookingDate));
             c.add(Calendar.DATE, 14);  // number of days to add
-            bookingDate = sdf.format(c.getTime());  // now the new date
+            bookingDate = sdf.format(c.getTime());  // set the new date plus 14 days for part to arrive
             break;
          } else {
             SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd");
             Calendar c = Calendar.getInstance();
             c.setTime(sdf.parse(bookingDate));
             c.add(Calendar.DATE, 1);  // number of days to add
-            bookingDate = sdf.format(c.getTime());  // now the new date
+            bookingDate = sdf.format(c.getTime());  // set date to tomorrow
          }
       }
       return bookingDate;
@@ -254,6 +256,5 @@ public class FireBaseUtilities implements Runnable {
          isConfirmed = true;
       }
    }
-
 
 }
