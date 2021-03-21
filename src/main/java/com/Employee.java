@@ -200,6 +200,4 @@ public class Employee {
       Inventory.printPostageCosts();
    }//printPostage
 
-
-
 }//class

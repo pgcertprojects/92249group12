@@ -69,7 +69,8 @@ public class Client extends UserProfile {
       // Then linear searches for the problemType which defaults to repair if not found.
       // Then takes these index positions and returns the cost found in the 2D array.
       // Declare and initialise variables
-      double cost = 0, carPremium = 1, labourCosts = 0, postageCosts = 0, discount = 0;
+      final double VAT = 0.2;
+      double cost = 0, carPremium = 1, labourCosts = 0, postageCosts = 0, discount = 0, taxedLabourCosts = 0;
       String priority = null, responseDiscount;
       boolean found = false;
       String [] problemList = { "air con", "air filter", "alloys", "alternator", "belts", "bodywork", "brake discs", "brake fluid", "brake pads", "brakes", //0-9
@@ -166,6 +167,7 @@ public class Client extends UserProfile {
       //Calculating car premium and using this to modify labour costs.
       carPremium = Helper.addCarTypePremium(car);
       labourCosts = cost * carPremium;
+      taxedLabourCosts = labourCosts + (labourCosts * VAT);
 
       //Prompting user for response and accepting their input
       System.out.println("\nHow fast do you require the work to be done? ");
@@ -186,7 +188,9 @@ public class Client extends UserProfile {
       System.out.println("\tDetected Job Type:\t" + problemType[jobType]);
       System.out.println("\tLabour costs:\t\t£" + Inventory.currency.format(cost));
       System.out.println("\tCar type modifier:\t" + (carPremium * 100) + "%");
-      System.out.println("\nTotal Labour Costs:\t£" + labourCosts);
+      System.out.println("\tVAT @ " + Inventory.percent.format(VAT) + "%:\t£" + (Inventory.currency.format(taxedLabourCosts)));
+      System.out.println("\nTotal Labour Costs:\t£" + taxedLabourCosts);
+
 
       //Calculating parts postage cost if required.
       System.out.println("\n***Parts Postage Costs***");
@@ -195,7 +199,7 @@ public class Client extends UserProfile {
          System.out.println("\tNo postage costs / postage for small consumables included in labour costs");
       }//if
       //Calculating, storing and outputting total
-      cost = labourCosts + postageCosts;
+      cost = taxedLabourCosts + postageCosts;
 
       //Asking user for discount code
       System.out.println("Do you have a discount code (please enter y or n): ");
@@ -234,8 +238,7 @@ public class Client extends UserProfile {
    }
 
    @Override
-   public void acceptInput(String data) throws ParseException
-   {
+   public void acceptInput(String data) throws ParseException {
       String forTheBookingDateMethod = data;
       Scanner scanner = new Scanner(System.in);
       Client client = new Client();
@@ -243,9 +246,9 @@ public class Client extends UserProfile {
       System.out.println("Are you an existing customer? (Y/N)");
       String newCustomerCheck = scanner.nextLine().toLowerCase().trim();
       if (newCustomerCheck.equals("y")){
-         System.out.println("please enter your username: ");
+         System.out.println("Please enter your username: ");
          String username = scanner.nextLine();
-         System.out.println("please enter your password");
+         System.out.println("Please enter your password");
          String password = scanner.nextLine();
          String isUser = client.checkUser(data, username, password);
          if (isUser != null){
@@ -254,12 +257,12 @@ public class Client extends UserProfile {
          }//if
       }//if
       if(newCustomerCheck.equals("n")){
-         System.out.println("Please enter a new user name of your choice: ");
+         System.out.println("Please enter a user name of your choice: \n");
          String userName = scanner.nextLine();
          System.out.println("Please enter your name: \n");
          String name = scanner.nextLine();
          validateName(name);
-         System.out.println("Please enter your password: \n");
+         System.out.println("Please enter a new password: \n");
          String password = scanner.nextLine();
          System.out.println("Please provide an email address: \n");
          String emailAddress = scanner.nextLine();
@@ -272,8 +275,8 @@ public class Client extends UserProfile {
          System.out.println("Please enter the brand of your car: \n");
          String car = scanner.nextLine();
          System.out.println("Please describe what you need done to your car ");
-         System.out.println("\t(Pleas describe the type of problem using either \"inspect\", \"repair\" or \"replace\" keywords");
-         System.out.println("\t(Only 1 type of job of no more than 5 problems/jobs per appointment please.\nResponse: \n");
+         System.out.println("\t(Pleas describe the type of problem using either \"inspect\", \"repair\" or \"replace\" keywords)");
+         System.out.println("\t(Only 1 type of job of no more than 5 problems/jobs per appointment please.)\nResponse: \n");
          String problem = scanner.nextLine();
          double finalCost = client.calculateEstimate(problem, car);
          FireBaseUtilities clientDetails = new FireBaseUtilities();
@@ -295,7 +298,7 @@ public class Client extends UserProfile {
             }//if
          }//if
       }//for
-      System.out.println("your username or password is incorrect. Exiting system");
+      System.out.println("Your username or password is incorrect. Exiting system");
       return null;
    }//checkUser
 

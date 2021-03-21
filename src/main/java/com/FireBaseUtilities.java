@@ -23,7 +23,6 @@ import java.util.*;
  * such as ensuring the correct appointment date is set.
  *
  */
-
 public class FireBaseUtilities implements Runnable {
 
    public static boolean isConfirmed = false;
@@ -55,12 +54,6 @@ public class FireBaseUtilities implements Runnable {
       DatabaseReference ref = fbs.getDb()
               .getReference("/");
 
-      /**
-       * Anonymous method to check for any changes in Firebase,
-       * containing further methods. See descriptions of
-       * methods contained within for further details on
-       * functionality
-       */
       ref.addValueEventListener(new ValueEventListener() {
 
          /**
@@ -76,8 +69,9 @@ public class FireBaseUtilities implements Runnable {
          public void onDataChange(DataSnapshot dataSnapshot) {
             Object document = dataSnapshot.getValue();
 
-            //FOR DEBUGGING: uncomment the following line if you need to see the json being read in from Firebase
-//            System.out.println(document);
+//            FOR DEBUGGING: uncomment the following line if you need to see the json being read in from Firebase
+//            System.out.println("**********************\n" + "THIS IS WHAT IS CURRENTLY HELD IN FIREBASE: \n" + document + "\n" + "****************************");
+
             object[0] = document;
          }
 
@@ -103,7 +97,7 @@ public class FireBaseUtilities implements Runnable {
             System.out.println("****************************************************");
             System.out.println("Please press 1 if you are a customer, or 2 if you are an employee (IF YOU DO NOT, THE PROGRAM WILL NOT PROCEED)");
             Scanner scanner = new Scanner(System.in);
-            int choice =0;
+            int choice;
             try {
                choice = scanner.nextInt();
             } catch (InputMismatchException nfe) {
@@ -155,7 +149,7 @@ public class FireBaseUtilities implements Runnable {
     * Hashmap object pushed asynchronously to Firebase to avoid blocking the rest of the program.
     */
    public void sendChanges(String name, String password, String emailAddress, String phone, String date, String car, String problem, String cost, String userName){
-      HashMap<String, Client> detailsOfBooking = new HashMap<String, Client>();
+      HashMap<String, Client> detailsOfBooking = new HashMap<>();
       detailsOfBooking.put(userName, new Client(name, password, emailAddress, phone, date, car, problem, cost));
       FirebaseDatabase database = FirebaseDatabase.getInstance();
       DatabaseReference refWrite = database.getReference("Newrec");
@@ -174,7 +168,7 @@ public class FireBaseUtilities implements Runnable {
     * sets the booking date.
     *
     */
-   public String bookingDate(String data) throws ParseException, ParseException {
+   public String bookingDate(String data) throws ParseException {
       String [] array;
       array = data.split("-M");
       String [] dateArray = new String[array.length];
@@ -186,9 +180,14 @@ public class FireBaseUtilities implements Runnable {
 
       //iterate through the date array, identify the date,
       //remove the forward slashes from the dates, add to tempArray.
+      //if there is a failure to clean the date due to placement discrepancy in the the data
+      //then default the affected element to 20210306.
       for (int i = 1; i < array.length; i++){
          dateArray[i] = (array[i].substring(array[i].indexOf("date=") + 5, array[i].indexOf("date=") + 15));
          tempArray[i] = dateArray[i].replace("/", "");
+         if(tempArray[i].contains("date=")){
+            tempArray[i] = "20210306";
+         }
       }
 
       //convert strings in tempArray to integers and add these to intArray
@@ -213,37 +212,51 @@ public class FireBaseUtilities implements Runnable {
       //check if a booking date contains more than 5 appointments.
       //If more than 5, set bookingDate to the next day.
       //Else if postage is incurred add two weeks (to ensure appointment is
-      //after parts arrive. Else if none of the other conditions are met then
+      //after parts arrive) 15 days if the slot plus two weeks is already full
+      //Else if none of the other conditions are met then
       //give client an appointment tomorrow.
       for(int i = 0; i < dateArray.length; i++){
          int count = 0;
          if(Arrays.asList(dateArray[i]).contains(bookingDate)){
-            count ++;
+            count++;
+         }
+         if (count > 4){
+               bookingDate = provideADate(bookingDate, 1);
+               break;
+         } else if(isConfirmed) {
             if (count > 4){
-               SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd");
-               Calendar c = Calendar.getInstance();
-               c.setTime(sdf.parse(bookingDate));
-               c.add(Calendar.DATE, 1);  // number of days to add
-               bookingDate = sdf.format(c.getTime());  // set date to following day
+               bookingDate = provideADate(bookingDate, 14);
+               break;
+            } else {
+               bookingDate = provideADate(bookingDate, 15);
                break;
             }
-         } else if(isConfirmed) {
-            SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd");
-            Calendar c = Calendar.getInstance();
-            c.setTime(sdf.parse(bookingDate));
-            c.add(Calendar.DATE, 14);  // number of days to add
-            bookingDate = sdf.format(c.getTime());  // set the new date plus 14 days for part to arrive
-            break;
          } else {
-            SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd");
-            Calendar c = Calendar.getInstance();
-            c.setTime(sdf.parse(bookingDate));
-            c.add(Calendar.DATE, 1);  // number of days to add
-            bookingDate = sdf.format(c.getTime());  // set date to tomorrow
+            bookingDate = provideADate(bookingDate, 1);
+            break;
          }
       }
       return bookingDate;
    }
+
+   /***
+    *
+    * @param date
+    * @param daysToAdd
+    * @return
+    * @throws ParseException
+    *
+    * Add more days to the appointment date.
+    */
+   public String provideADate(String date, int daysToAdd ) throws ParseException {
+      SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd");
+      Calendar c = Calendar.getInstance();
+      c.setTime(sdf.parse(date));
+      c.add(Calendar.DATE, daysToAdd);  // number of days to add
+      date = sdf.format(c.getTime());  // set new date
+      return date;
+   }
+
 
    /**
     * @param check
