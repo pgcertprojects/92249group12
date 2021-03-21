@@ -78,7 +78,7 @@ public class Client extends UserProfile {
              "light", "oil", "paint", "radiator", "scratches", "service", "shock absorbers", "spark plugs", "springs", "starter",//20-29
              "suspension", "timing", "timingbelt", "transmission", "transmission fluid", "tyres", "turbo", "water pump", "wheel bearing", "windscreen"//30-39
             };
-      int [] clientProblems = {27,40,40,40,40};
+      int [] clientProblems = {25,40,40,40,40};
       int clientProblemCount = 0;
       String [] problemType = {"inspect", "repair", "replace"}; //default to repair
       int jobType = 0;
