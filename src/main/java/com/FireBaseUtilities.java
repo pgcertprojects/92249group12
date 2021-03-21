@@ -23,7 +23,6 @@ import java.util.*;
  * such as ensuring the correct appointment date is set.
  *
  */
-
 public class FireBaseUtilities implements Runnable {
 
    public static boolean isConfirmed = false;
@@ -55,12 +54,6 @@ public class FireBaseUtilities implements Runnable {
       DatabaseReference ref = fbs.getDb()
               .getReference("/");
 
-      /**
-       * Anonymous method to check for any changes in Firebase,
-       * containing further methods. See descriptions of
-       * methods contained within for further details on
-       * functionality
-       */
       ref.addValueEventListener(new ValueEventListener() {
 
          /**
@@ -104,7 +97,7 @@ public class FireBaseUtilities implements Runnable {
             System.out.println("****************************************************");
             System.out.println("Please press 1 if you are a customer, or 2 if you are an employee (IF YOU DO NOT, THE PROGRAM WILL NOT PROCEED)");
             Scanner scanner = new Scanner(System.in);
-            int choice =0;
+            int choice;
             try {
                choice = scanner.nextInt();
             } catch (InputMismatchException nfe) {
@@ -175,7 +168,7 @@ public class FireBaseUtilities implements Runnable {
     * sets the booking date.
     *
     */
-   public String bookingDate(String data) throws ParseException, ParseException {
+   public String bookingDate(String data) throws ParseException {
       String [] array;
       array = data.split("-M");
       String [] dateArray = new String[array.length];
@@ -221,40 +214,44 @@ public class FireBaseUtilities implements Runnable {
          int count = 0;
          if(Arrays.asList(dateArray[i]).contains(bookingDate)){
             count ++;
-            if (count > 4){
-               SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd");
-               Calendar c = Calendar.getInstance();
-               c.setTime(sdf.parse(bookingDate));
-               c.add(Calendar.DATE, 1);  // number of days to add
-               bookingDate = sdf.format(c.getTime());  // set date to following day
+            if (count >= 4){
+               bookingDate = provideADate(bookingDate, 1);
                break;
             }
          } else if(isConfirmed) {
-            if (count > 4){
-               SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd");
-               Calendar c = Calendar.getInstance();
-               c.setTime(sdf.parse(bookingDate));
-               c.add(Calendar.DATE, 14);  // number of days to add
-               bookingDate = sdf.format(c.getTime());  // set the new date plus 14 days for part to arrive
+            if (count >= 4){
+               bookingDate = provideADate(bookingDate, 14);
                break;
             } else {
-               SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd");
-               Calendar c = Calendar.getInstance();
-               c.setTime(sdf.parse(bookingDate));
-               c.add(Calendar.DATE, 15);  // number of days to add
-               bookingDate = sdf.format(c.getTime());  // set the new date plus 14 days for part to arrive
+               bookingDate = provideADate(bookingDate, 15);
                break;
             }
          } else {
-            SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd");
-            Calendar c = Calendar.getInstance();
-            c.setTime(sdf.parse(bookingDate));
-            c.add(Calendar.DATE, 1);  // number of days to add
-            bookingDate = sdf.format(c.getTime());  // set date to tomorrow
+            bookingDate = provideADate(bookingDate, 1);
+            break;
          }
       }
       return bookingDate;
    }
+
+   /***
+    *
+    * @param date
+    * @param daysToAdd
+    * @return
+    * @throws ParseException
+    *
+    * Add more days to the appointment date.
+    */
+   public String provideADate(String date, int daysToAdd ) throws ParseException {
+      SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd");
+      Calendar c = Calendar.getInstance();
+      c.setTime(sdf.parse(date));
+      c.add(Calendar.DATE, daysToAdd);  // number of days to add
+      date = sdf.format(c.getTime());  // set new date
+      return date;
+   }
+
 
    /**
     * @param check
