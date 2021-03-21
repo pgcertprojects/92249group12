@@ -149,7 +149,7 @@ public class FireBaseUtilities implements Runnable {
     * Hashmap object pushed asynchronously to Firebase to avoid blocking the rest of the program.
     */
    public void sendChanges(String name, String password, String emailAddress, String phone, String date, String car, String problem, String cost, String userName){
-      HashMap<String, Client> detailsOfBooking = new HashMap<String, Client>();
+      HashMap<String, Client> detailsOfBooking = new HashMap<>();
       detailsOfBooking.put(userName, new Client(name, password, emailAddress, phone, date, car, problem, cost));
       FirebaseDatabase database = FirebaseDatabase.getInstance();
       DatabaseReference refWrite = database.getReference("Newrec");
@@ -180,9 +180,14 @@ public class FireBaseUtilities implements Runnable {
 
       //iterate through the date array, identify the date,
       //remove the forward slashes from the dates, add to tempArray.
+      //if there is a failure to clean the date due to placement discrepancy in the the data
+      //then default the affected element to 20210306.
       for (int i = 1; i < array.length; i++){
          dateArray[i] = (array[i].substring(array[i].indexOf("date=") + 5, array[i].indexOf("date=") + 15));
          tempArray[i] = dateArray[i].replace("/", "");
+         if(tempArray[i].contains("date=")){
+            tempArray[i] = "20210306";
+         }
       }
 
       //convert strings in tempArray to integers and add these to intArray
@@ -213,13 +218,13 @@ public class FireBaseUtilities implements Runnable {
       for(int i = 0; i < dateArray.length; i++){
          int count = 0;
          if(Arrays.asList(dateArray[i]).contains(bookingDate)){
-            count ++;
-            if (count >= 4){
+            count++;
+         }
+         if (count > 4){
                bookingDate = provideADate(bookingDate, 1);
                break;
-            }
          } else if(isConfirmed) {
-            if (count >= 4){
+            if (count > 4){
                bookingDate = provideADate(bookingDate, 14);
                break;
             } else {
