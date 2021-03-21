@@ -1,8 +1,6 @@
 package com;
 
-
 import java.text.DecimalFormat;
-import java.util.Arrays;
 import java.util.InputMismatchException;
 import java.util.Scanner;
 
@@ -47,7 +45,7 @@ public class Employee {
                System.out.println("User exists in database: " + checkUser(data) + "\n\n");
                break;
             case 4:
-               printPostage(data);
+               printPostage();
                break;
             default:
                System.out.print("Please enter a valid selection\nEnter:");
@@ -195,7 +193,7 @@ public class Employee {
       return userExists;
    }//checkUser
 
-   private void printPostage(String data){
+   private void printPostage(){
       System.out.println("Here is a summary of postage costs:\t");
       Inventory.printPostageCosts();
    }//printPostage

@@ -309,7 +309,7 @@ public class Client extends UserProfile {
          if (isword(name)){
             System.out.println("That name is valid, thank you "+name);
             break;
-         } else if(count !=0){
+         } else if(count != 0){
             count--;
             System.out.println("Invalid name, please try again, you have " + count + " chances left to enter a valid name.");
             name = keyboard.nextLine();
@@ -335,8 +335,9 @@ public class Client extends UserProfile {
             } else if(chance !=0) {
                chance--;
                System.out.println("Invalid email address, please try again, you have " + chance + " more chance(s) to enter a valid name.");
+               emailAddress = scanner.nextLine();
             } else {
-                  System.out.println("Sorry you had 3 attempts, system shutdown");
+                  System.out.println("Sorry you had 3 attempts, system shutting down");
                   return null;
             }
         }
@@ -357,14 +358,14 @@ public class Client extends UserProfile {
         for (int count=0;count<3; count++) {
             if(phoneno(phone)){
                System.out.println("That is a valid phone number, "+phone+" thank you\n");
-               return phone;
-            } else {
+               break;
+            } else if(chance !=0) {
                chance--;
-               System.out.println("Invalid telephone number, please try again, you have " + chance + " more chance(s) to enter a valid number");
-               if (chance == 0) {
-               System.out.println("Sorry you had 3 attempts, system shutdown");
+               System.out.println("Invalid phone, please try again, you have " + chance + " more chance(s) to enter a valid name.");
+               phone = scanner.nextLine();
+            } else {
+               System.out.println("Sorry you had 3 attempts, system shutting down");
                return null;
-               }
             }
         }
         return phone;
