@@ -76,8 +76,9 @@ public class FireBaseUtilities implements Runnable {
          public void onDataChange(DataSnapshot dataSnapshot) {
             Object document = dataSnapshot.getValue();
 
-            //FOR DEBUGGING: uncomment the following line if you need to see the json being read in from Firebase
-//            System.out.println(document);
+//            FOR DEBUGGING: uncomment the following line if you need to see the json being read in from Firebase
+//            System.out.println("**********************\n" + "THIS IS WHAT IS CURRENTLY HELD IN FIREBASE: \n" + document + "\n" + "****************************");
+
             object[0] = document;
          }
 
