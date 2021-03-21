@@ -17,7 +17,7 @@ public class Helper {
 
       //Linear search
       for (int index = 0; index < dictionary.length; index++) {
-         if (dictionary[index].equals(priority)) {
+         if (priority.contains(dictionary[index])) {
             detectedPriority = affinity;
          }//if
       }//for
@@ -32,7 +32,7 @@ public class Helper {
       int workingNumber, top, bottom, middle;
 
       // Declare parallel array of car types and their associated price modifier.
-      String [] brand = Inventory.getBrand();
+      String [] brand = Inventory.getCarBrand();
       double [] labourCostModifier = {
             1.5, 0.9, 0.8, 1.2, 1.0, 0.8, 3.0, 2.0, 1.4, //A (9) = 0-8
             2.5, 2.0, 1.0, 3.5, //B (4) = 9-12

@@ -74,11 +74,11 @@ public class Client extends UserProfile {
       String priority = null, responseDiscount;
       boolean found = false;
       String [] problemList = { "air con", "air filter", "alloys", "alternator", "belts", "bodywork", "brake discs", "brake fluid", "brake pads", "brakes", //0-9
-            "bulbs", "clutch", "coilpack", "coolant", "dent", "flywheel", "fuel pump", "ignition", "ignitioncoils", "inspect", //10-19
-            "license plate", "mot", "oil", "oil filter", "paint", "radiator", "scratches", "service", "shock absorbers", "spark plugs", //20-29
-            "springs", "starter", "suspension", "timing", "timingbelt", "transmission", "transmission fluid", "tyres", "turbo", "water pump", //30-39
-            "wheel bearing", "windscreen", ""}; //40-41
-      int [] clientProblems = {19,42,42,42,42};
+            "bulbs", "clutch", "coil", "coolant", "dent", "flywheel", "fuel pump", "ignition", "indicator", "license plate",//10-19
+             "light", "oil", "paint", "radiator", "scratches", "service", "shock absorbers", "spark plugs", "springs", "starter",//20-29
+             "suspension", "timing", "timingbelt", "transmission", "transmission fluid", "tyres", "turbo", "water pump", "wheel bearing", "windscreen"//30-39
+            };
+      int [] clientProblems = {27,40,40,40,40};
       int clientProblemCount = 0;
       String [] problemType = {"inspect", "repair", "replace"}; //default to repair
       int jobType = 0;
@@ -97,28 +97,26 @@ public class Client extends UserProfile {
             //10-19
             {10, 50, 50}, //bulbs
             {50, 150, 300}, //clutch
-            {20, 80, 120}, //coilpack
+            {20, 80, 120}, //coil
             {15, 80, 80}, //coolant
             {15, 75, 75}, //dent
             {50, 150, 350}, //flywheel
             {25, 200, 250}, //fuelpump
             {20, 60, 120}, //ignition
-            {20, 60, 120}, //ignition coils
-            {20, 20, 20}, //inspection
-            //20-29
+            {20, 50, 120}, //indicator
             {5, 25, 50}, //license plate
-            {80, 80, 80}, //mot
+            //20-29
+            {15, 50, 150}, //light
             {15, 80, 80}, //oil
-            {15, 80, 80}, //oil filter
             {20, 75, 200}, //paint
             {25, 100, 200}, //radiator
             {20, 75, 75}, //scratches
             {80, 80, 80}, //service
             {25, 150, 400}, //shock absorbers
             {20, 60, 60}, //spark plugs
-            //30-39
             {25, 150, 400}, //springs
             {25, 125, 200}, //starter
+            //30-39
             {25, 150, 400}, //suspension
             {25, 60, 120}, //timing
             {20, 60, 120}, //timing belt
@@ -127,21 +125,20 @@ public class Client extends UserProfile {
             {15, 40, 100}, //tyres
             {25, 540, 800}, //turbo
             {25, 75, 200}, //water pump
-            //40-41
             {20, 80, 80}, //wheel bearing
             {10, 50, 120}, //windscreen
-            //42
+            //40
             {0,0,0} //Default
       };
 
       //Finding the problemType, defaults to repair if not found.
-      int count = 0;
-      while ((!found) && (count < problemType.length)) {
-         if (problem.contains(problemType[count])) {
+      int probCount = 0;
+      while ((!found) && (probCount < problemType.length)) {
+         if (problem.toLowerCase().contains(problemType[probCount])) {
             found = true;
-            jobType = count;
+            jobType = probCount;
          }//if
-         count += 1;
+         probCount += 1;
       }//while
       if (!found) {
          jobType = 1;
@@ -149,14 +146,14 @@ public class Client extends UserProfile {
 
       //Finding the clientProblems via linear search and adding the indexes of these to a list of client problems.
       for (int index = 0; (index < problemList.length) && (clientProblemCount < 5); index++) {
-         if (problem.contains(problemList[index])) {
+         if (problem.toLowerCase().contains(problemList[index])) {
             clientProblems[clientProblemCount] = index;
             clientProblemCount += 1;
          }//if
       }//for
+
       if (clientProblemCount == 0) {
          clientProblemCount = 1;
-         clientProblems[0] = 27;
       }//if
 
       //Calculating total cost from provided information by accessing prices stored in 2D array.
@@ -177,20 +174,19 @@ public class Client extends UserProfile {
       priority = Inventory.keyboard.next().toLowerCase();
       //Outputting calculations to user
       System.out.println("\nCalculating estimate for:");
-      System.out.println("Car:\t\t\t" + car);
-      System.out.println("Problem:\t\t" + problem);
-      System.out.println("Job Priority:\t" + priority);
+      System.out.println("Car:\t\t\t" + Inventory.capitalise(car));
+      System.out.println("Problem:\t\t" + Inventory.capitalise(problem));
+      System.out.println("Job Priority:\t" + Inventory.capitalise(priority));
       System.out.println("\n***Labour and Parts Costs***");
       System.out.println("\tDetected Jobs:");
-      for (int index = 0; index < clientProblems.length; index++) {
-         System.out.println("\t\t" + (index + 1) + ")\t" + problemList[clientProblems[index]]);
+      for (int index = 0; index < (clientProblemCount); index++) {
+         System.out.println("\t\t" + (index + 1) + ")\t" + Inventory.capitalise(problemList[clientProblems[index]]));
       }//for
-      System.out.println("\tDetected Job Type:\t" + problemType[jobType]);
+      System.out.println("\tDetected Job Type:\t" + Inventory.capitalise(problemType[jobType]));
       System.out.println("\tLabour costs:\t\t£" + Inventory.currency.format(cost));
       System.out.println("\tCar type modifier:\t" + (carPremium * 100) + "%");
-      System.out.println("\tVAT @ " + Inventory.percent.format(VAT) + "%:\t£" + (Inventory.currency.format(taxedLabourCosts)));
+      System.out.println("\tVAT @ " + Inventory.percent.format(VAT * 100) + "%:\t£" + (Inventory.currency.format(taxedLabourCosts - labourCosts)));
       System.out.println("\nTotal Labour Costs:\t£" + taxedLabourCosts);
-
 
       //Calculating parts postage cost if required.
       System.out.println("\n***Parts Postage Costs***");
@@ -201,17 +197,19 @@ public class Client extends UserProfile {
       //Calculating, storing and outputting total
       cost = taxedLabourCosts + postageCosts;
 
-      //Asking user for discount code
-      System.out.println("Do you have a discount code (please enter y or n): ");
-      responseDiscount = Inventory.keyboard.next().toLowerCase();
-      if (responseDiscount.equals("y")) {
-         discount = Inventory.discountCode();
-         cost = cost - discount;
-      } else if(responseDiscount.equals("n")) {
-         System.out.println("No discount code selected. ");
-      } else {
-         System.out.println("Invalid response. Continuing without discount");
-      }//else
+      //Asking user for discount code if cost > £50
+      if (cost > 50) {
+         System.out.println("Do you have a discount code (please enter y or n): ");
+         responseDiscount = Inventory.keyboard.next().toLowerCase();
+         if (responseDiscount.equals("y")) {
+            discount = Inventory.discountCode();
+            cost = cost - discount;
+         } else if (responseDiscount.equals("n")) {
+            System.out.println("No discount code selected. ");
+         } else {
+            System.out.println("Invalid response. Continuing without discount");
+         }//else
+      }//if
 
       System.out.println("\n***Overall Cost Estimate***");
       System.out.println("Estimate: £" + Inventory.currency.format(cost));
@@ -374,7 +372,5 @@ public class Client extends UserProfile {
    public static boolean phoneno(String num){
         return Pattern.matches("[0-9]+", num);
    }
-
-
 }//class
 
