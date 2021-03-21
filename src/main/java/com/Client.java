@@ -268,8 +268,6 @@ public class Client extends UserProfile {
          System.out.println("Please enter your phone number: \n");
          String phone = scanner.nextLine();
          validatePhone(phone);
-         DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");
-         LocalDateTime now = LocalDateTime.now();
          System.out.println("Please enter the brand of your car: \n");
          String car = scanner.nextLine();
          System.out.println("Please describe what you need done to your car ");
