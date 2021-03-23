@@ -169,75 +169,39 @@ public class FireBaseUtilities implements Runnable {
     *
     */
    public String bookingDate(String data) throws ParseException {
+      int count = 0;
       String [] array;
       array = data.split("-M");
       String [] dateArray = new String[array.length];
-      String [] tempArray = new String[array.length];
-      int [] intArray = new int[array.length];
       DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd");
       LocalDateTime now = LocalDateTime.now();
       String bookingDate = dtf.format(now);
+      bookingDate = provideADate(bookingDate,1);
 
-      //iterate through the date array, identify the date,
-      //remove the forward slashes from the dates, add to tempArray.
-      //if there is a failure to clean the date due to placement discrepancy in the the data
-      //then default the affected element to 20210306.
-      for (int i = 1; i < array.length; i++){
-         dateArray[i] = (array[i].substring(array[i].indexOf("date=") + 5, array[i].indexOf("date=") + 15));
-         tempArray[i] = dateArray[i].replace("/", "");
-         if(tempArray[i].contains("date=")){
-            tempArray[i] = "20210306";
-         }
-      }
-
-      //convert strings in tempArray to integers and add these to intArray
-      for(int i = 0; i<tempArray.length; i++) {
-         try {
-            intArray[i] = Integer.parseInt(tempArray[i]);
-         }
-         catch (NumberFormatException nfe){
-
-         }
-      }
-
-      //compare each value in intArray and set bookingDate to the largest.
-      for (int i = 0; i < intArray.length; i++) {
-         for (int k = i + 1; k < intArray.length; k++){
-            if (intArray[i] < intArray[k]){
-               bookingDate = dateArray[k];
-            }
-         }
-      }
-
-      //check if a booking date contains more than 5 appointments.
-      //If more than 5, set bookingDate to the next day.
-      //Else if postage is incurred add two weeks (to ensure appointment is
-      //after parts arrive) 15 days if the slot plus two weeks is already full
-      //Else if none of the other conditions are met then
-      //give client an appointment tomorrow.
-      for(int i = 0; i < dateArray.length; i++){
-         int count = 0;
-         if(Arrays.asList(dateArray[i]).contains(bookingDate)){
+      //iterate through dateArray[] and if it already includes tomorrow's date, increment count.
+      for(int i = 0; i < dateArray.length; i++) {
+         count = 0;
+         if (Arrays.asList(dateArray[i]).contains(bookingDate)) {
             count++;
          }
-         if (count > 4){
-               bookingDate = provideADate(bookingDate, 1);
-               break;
-         } else if(isConfirmed) {
+      }
+
+      //if there's postage of a part required and count is greater than 4 add 15 days to tomorrow's date
+      //or 14 days if count is not greater than 4, but there is postage
+      //else add another day to tomorrow's date if no postage and count is greater than 4.
+         if(isConfirmed) {
             if (count > 4){
-               bookingDate = provideADate(bookingDate, 14);
-               break;
-            } else {
                bookingDate = provideADate(bookingDate, 15);
-               break;
+            } else {
+               bookingDate = provideADate(bookingDate, 14);
             }
          } else {
-            bookingDate = provideADate(bookingDate, 1);
-            break;
+            if(count > 4){
+               bookingDate = provideADate(bookingDate, 1);
+            }
          }
+         return bookingDate;
       }
-      return bookingDate;
-   }
 
    /***
     *
